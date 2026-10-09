@@ -1,0 +1,2808 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050816" />
+    <meta
+      name="description"
+      content="Tabeebi is an integrated healthcare platform for doctor appointments, labs and radiology, pharmacy and medical equipment commerce, secure payments, and real-time consultation."
+    />
+    <title>Tabeebi | Healthcare Technology Platform</title>
+    <link rel="icon" type="image/jpeg" href="./assets/browser image.png" />
+    <link rel="apple-touch-icon" href="./assets/browser image.png" />
+    <script>
+      try {
+        var t = localStorage.getItem("tabeebi-theme");
+        if (
+          t === "dark" ||
+          (!t && matchMedia("(prefers-color-scheme: dark)").matches)
+        )
+          document.documentElement.classList.add("dark");
+      } catch (e) {}
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { darkMode: "class" };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      :root {
+        --bg: #f6f9fc;
+        --surface: rgba(255, 255, 255, 0.92);
+        --solid: #fff;
+        --border: rgba(100, 116, 139, 0.18);
+        --text: #0f172a;
+        --text2: #475569;
+        --muted: #64748b;
+        --grid: rgba(100, 116, 139, 0.055);
+        --nav: rgba(255, 255, 255, 0.86);
+        --chip: #f8fafc;
+        --chipb: #e2e8f0;
+        --sky: #0284c7;
+      }
+      .dark {
+        --bg: #050816;
+        --surface: rgba(8, 15, 32, 0.82);
+        --solid: #0b1122;
+        --border: rgba(71, 85, 105, 0.35);
+        --text: #f8fafc;
+        --text2: #94a3b8;
+        --muted: #64748b;
+        --grid: rgba(148, 163, 184, 0.03);
+        --nav: rgba(5, 8, 22, 0.86);
+        --chip: #0f172a;
+        --chipb: #1e293b;
+        --sky: #38bdf8;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 100px;
+      }
+      body {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(
+            circle at 5% 5%,
+            rgba(14, 165, 233, 0.08),
+            transparent 24%
+          ),
+          radial-gradient(
+            circle at 95% 8%,
+            rgba(99, 102, 241, 0.07),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 50% 70%,
+            rgba(139, 92, 246, 0.04),
+            transparent 28%
+          ),
+          var(--bg);
+        overflow-x: hidden;
+        transition:
+          background 0.5s ease,
+          color 0.35s ease;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 55px 55px;
+        -webkit-mask-image: linear-gradient(to bottom, black, transparent 78%);
+        mask-image: linear-gradient(to bottom, black, transparent 78%);
+        z-index: -5;
+      }
+      ::selection {
+        background: #38bdf8;
+        color: #020617;
+      }
+      ::-webkit-scrollbar {
+        width: 7px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(#38bdf8, #6366f1);
+        border-radius: 999px;
+      }
+      :focus-visible {
+        outline: 2px solid #38bdf8;
+        outline-offset: 3px;
+        border-radius: 10px;
+      }
+
+      #preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 18px;
+        transition:
+          opacity 0.6s ease,
+          visibility 0.6s ease;
+      }
+      #preloader.hide {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .loader-logo {
+        width: 72px;
+        height: 72px;
+        border-radius: 22px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        animation: loaderPulse 1.4s ease-in-out infinite;
+      }
+      .loader-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .loader-bar {
+        width: 140px;
+        height: 3px;
+        border-radius: 99px;
+        background: var(--border);
+        overflow: hidden;
+      }
+      .loader-bar span {
+        display: block;
+        height: 100%;
+        width: 40%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, #38bdf8, #818cf8);
+        animation: loaderSlide 1.1s ease-in-out infinite;
+      }
+      @keyframes loaderPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.35);
+        }
+        50% {
+          transform: scale(1.06);
+          box-shadow: 0 0 0 16px rgba(56, 189, 248, 0);
+        }
+      }
+      @keyframes loaderSlide {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(350%);
+        }
+      }
+
+      #progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0;
+        z-index: 90;
+        background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+      }
+      #cursorGlow {
+        position: fixed;
+        width: 420px;
+        height: 420px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -3;
+        background: radial-gradient(
+          circle,
+          rgba(56, 189, 248, 0.13),
+          transparent 65%
+        );
+        transform: translate(-50%, -50%);
+        left: -999px;
+        top: -999px;
+      }
+
+      .gradient-text {
+        background: linear-gradient(120deg, #0284c7, #4f46e5, #9333ea, #0284c7);
+        background-size: 250% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradShift 6s linear infinite;
+      }
+      .dark .gradient-text {
+        background-image: linear-gradient(
+          120deg,
+          #38bdf8,
+          #818cf8,
+          #c084fc,
+          #38bdf8
+        );
+        background-size: 250% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+      @keyframes gradShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 250% 50%;
+        }
+      }
+
+      .card {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.98),
+          rgba(248, 250, 252, 0.9)
+        );
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 50px rgba(15, 23, 42, 0.045);
+      }
+      .dark .card {
+        background: linear-gradient(
+          145deg,
+          rgba(15, 23, 42, 0.86),
+          rgba(7, 13, 28, 0.78)
+        );
+        border-color: rgba(51, 65, 85, 0.55);
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.15);
+      }
+      .card-hover {
+        transition:
+          transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+          border-color 0.3s ease,
+          box-shadow 0.4s ease;
+        transform-style: preserve-3d;
+        will-change: transform;
+      }
+      .card-hover:hover {
+        border-color: rgba(14, 165, 233, 0.38);
+        box-shadow:
+          0 26px 65px rgba(15, 23, 42, 0.1),
+          0 0 38px rgba(56, 189, 248, 0.07);
+      }
+      .dark .card-hover:hover {
+        box-shadow:
+          0 26px 65px rgba(0, 0, 0, 0.35),
+          0 0 38px rgba(56, 189, 248, 0.07);
+      }
+      .card-hover:hover .icon-pop {
+        transform: scale(1.14) rotate(-6deg);
+      }
+      .icon-pop {
+        transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+      }
+
+      .gradient-border {
+        position: relative;
+        isolation: isolate;
+      }
+      .gradient-border::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        padding: 1px;
+        border-radius: inherit;
+        background: linear-gradient(
+          135deg,
+          rgba(14, 165, 233, 0.55),
+          rgba(99, 102, 241, 0.15),
+          rgba(168, 85, 247, 0.35)
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .nav-scrolled {
+        background: var(--nav) !important;
+        border-color: var(--border) !important;
+        -webkit-backdrop-filter: blur(25px);
+        backdrop-filter: blur(25px);
+        box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+      }
+      .nav-link {
+        position: relative;
+        padding: 8px 0;
+        color: var(--text2);
+        transition: color 0.25s ease;
+      }
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #38bdf8, #818cf8);
+        transition: width 0.3s ease;
+      }
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--text);
+      }
+      .nav-link:hover::after,
+      .nav-link.active::after {
+        width: 100%;
+      }
+
+      .hero-grid {
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 48px 48px;
+        -webkit-mask-image: linear-gradient(
+          to bottom,
+          black 10%,
+          transparent 82%
+        );
+        mask-image: linear-gradient(to bottom, black 10%, transparent 82%);
+      }
+      .hero-orb {
+        position: absolute;
+        border-radius: 999px;
+        filter: blur(90px);
+        pointer-events: none;
+        animation: orbMove 14s ease-in-out infinite alternate;
+      }
+      .orb-one {
+        width: 330px;
+        height: 330px;
+        top: 10%;
+        left: -120px;
+        background: rgba(14, 165, 233, 0.14);
+      }
+      .orb-two {
+        width: 390px;
+        height: 390px;
+        top: 5%;
+        right: -150px;
+        background: rgba(99, 102, 241, 0.12);
+        animation-delay: -3s;
+      }
+      .orb-three {
+        width: 290px;
+        height: 290px;
+        bottom: 0;
+        left: 43%;
+        background: rgba(168, 85, 247, 0.08);
+        animation-delay: -6s;
+      }
+      @keyframes orbMove {
+        0% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        100% {
+          transform: translate3d(35px, -25px, 0) scale(1.1);
+        }
+      }
+      #particles {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .hero-device {
+        transform-style: preserve-3d;
+        transition: transform 0.2s ease-out;
+        min-width: 0;
+      }
+      .hero-shell {
+        border-radius: 2rem;
+        background: var(--solid);
+        padding: 0.6rem;
+        box-shadow:
+          0 38px 90px rgba(15, 23, 42, 0.16),
+          0 0 60px rgba(56, 189, 248, 0.08);
+      }
+      .dark .hero-shell {
+        box-shadow:
+          0 40px 95px rgba(0, 0, 0, 0.5),
+          0 0 65px rgba(56, 189, 248, 0.07);
+      }
+      .win {
+        border-radius: 1.5rem;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: var(--solid);
+      }
+      .win-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.85rem 1.1rem;
+        background: var(--chip);
+        border-bottom: 1px solid var(--border);
+      }
+      .win-url {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.3rem 0.8rem;
+        border-radius: 999px;
+        background: var(--solid);
+        border: 1px solid var(--border);
+        color: var(--text2);
+        font-family: ui-monospace, monospace;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .win-url i {
+        color: #10b981;
+        font-size: 9px;
+      }
+      .win-body {
+        position: relative;
+        background: var(--solid);
+        overflow: hidden;
+      }
+      .hero-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.8s ease;
+      }
+      @media (min-width: 640px) {
+        .hero-image {
+          height: 410px;
+        }
+      }
+      @media (min-width: 1024px) {
+        .hero-image {
+          height: 450px;
+        }
+      }
+      .win-body:hover .hero-image {
+        transform: scale(1.04);
+      }
+      .hero-fade {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(
+          to top,
+          rgba(15, 23, 42, 0.58),
+          rgba(15, 23, 42, 0.05) 55%,
+          transparent
+        );
+      }
+      .scan {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 90px;
+        pointer-events: none;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(56, 189, 248, 0.22),
+          transparent
+        );
+        animation: scan 5s ease-in-out infinite;
+      }
+      @keyframes scan {
+        0% {
+          top: -90px;
+        }
+        100% {
+          top: 100%;
+        }
+      }
+      .live-badge {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 999px;
+        background: var(--solid);
+        color: var(--text);
+        border: 1px solid var(--border);
+        font-size: 11px;
+        font-weight: 700;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+      }
+      .live-dot {
+        position: relative;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+      }
+      .live-dot::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: #10b981;
+        animation: pulseRing 2s ease-out infinite;
+      }
+      .info-card {
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        padding: 1rem 1.2rem;
+        border-radius: 1.1rem;
+        background: var(--solid);
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.22);
+        color: var(--text);
+      }
+      .info-eyebrow {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--sky);
+      }
+      .info-title {
+        margin-top: 0.25rem;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .info-shield {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #10b981;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .tag {
+        padding: 0.3rem 0.65rem;
+        border-radius: 0.6rem;
+        background: var(--chip);
+        border: 1px solid var(--chipb);
+        color: var(--text2);
+        font-size: 10px;
+        font-weight: 700;
+        transition:
+          transform 0.25s ease,
+          color 0.25s ease,
+          border-color 0.25s ease;
+      }
+      .tag:hover {
+        transform: translateY(-2px);
+        color: var(--sky);
+        border-color: var(--sky);
+      }
+      .float-badge {
+        position: absolute;
+        display: none;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        background: var(--solid);
+        border: 1px solid var(--border);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+        color: var(--text);
+      }
+      @media (min-width: 640px) {
+        .float-badge {
+          display: flex;
+        }
+      }
+      .float-badge small {
+        display: block;
+        font-size: 10px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .float-badge b {
+        font-size: 12px;
+      }
+      .floating {
+        animation: floating 7s ease-in-out infinite;
+      }
+      .floating-slow {
+        animation: floating 9s ease-in-out infinite;
+      }
+      @keyframes floating {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-9px);
+        }
+      }
+      @keyframes pulseRing {
+        0% {
+          transform: scale(0.8);
+          opacity: 0.65;
+        }
+        70%,
+        100% {
+          transform: scale(2.2);
+          opacity: 0;
+        }
+      }
+
+      .btn {
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.3s ease,
+          background 0.3s ease,
+          border-color 0.3s ease;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+      .btn:active {
+        transform: translateY(0) scale(0.98);
+      }
+      .btn-primary {
+        background: linear-gradient(120deg, #0284c7, #4f46e5);
+        color: #fff;
+        box-shadow: 0 12px 30px rgba(14, 165, 233, 0.24);
+      }
+      .btn-primary:hover {
+        box-shadow: 0 16px 38px rgba(79, 70, 229, 0.35);
+      }
+      .btn-dark {
+        background: #0f172a;
+        color: #fff;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+      }
+      .dark .btn-dark {
+        background: #fff;
+        color: #020617;
+      }
+      .btn-outline {
+        background: rgba(14, 165, 233, 0.07);
+        color: #0369a1;
+        border: 1px solid rgba(14, 165, 233, 0.3);
+      }
+      .dark .btn-outline {
+        color: #38bdf8;
+      }
+      .btn-outline:hover {
+        background: rgba(14, 165, 233, 0.14);
+      }
+      .btn-amber {
+        background: linear-gradient(120deg, #f59e0b, #f97316);
+        color: #1c1917;
+        box-shadow: 0 10px 26px rgba(249, 115, 22, 0.22);
+      }
+      .btn-icon {
+        background: var(--solid);
+        color: var(--text2);
+        border: 1px solid var(--border);
+      }
+      .btn-icon:hover {
+        color: var(--sky);
+        border-color: var(--sky);
+      }
+      .shine::after {
+        content: "";
+        position: absolute;
+        top: -120%;
+        left: -150%;
+        width: 65%;
+        height: 340%;
+        transform: rotate(25deg);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.35),
+          transparent
+        );
+        transition: left 0.9s ease;
+      }
+      .shine:hover::after {
+        left: 160%;
+      }
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.45);
+        transform: scale(0);
+        animation: ripple 0.65s ease-out;
+        pointer-events: none;
+      }
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(28px) scale(0.98);
+        transition:
+          opacity 0.8s ease,
+          transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .reveal.show {
+        opacity: 1;
+        transform: none;
+      }
+      .reveal.show.done {
+        transition:
+          transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+          border-color 0.3s ease,
+          box-shadow 0.4s ease;
+      }
+
+      .mobile-menu {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.45s ease,
+          opacity 0.25s ease;
+      }
+      .mobile-menu.active {
+        max-height: 900px;
+        opacity: 1;
+      }
+      .mobile-link {
+        transition:
+          background 0.25s ease,
+          transform 0.25s ease;
+      }
+      .mobile-link:hover {
+        transform: translateX(4px);
+      }
+
+      .input-style {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.38);
+        color: #0f172a;
+        transition:
+          border-color 0.25s ease,
+          box-shadow 0.25s ease,
+          background 0.25s ease;
+      }
+      .dark .input-style {
+        background: rgba(2, 6, 23, 0.68);
+        border-color: rgba(51, 65, 85, 0.72);
+        color: #fff;
+      }
+      .input-style:focus {
+        outline: none;
+        border-color: rgba(14, 165, 233, 0.8);
+        background: var(--solid);
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+      }
+      .input-style::placeholder {
+        color: #94a3b8;
+      }
+
+      .chip {
+        transition:
+          border-color 0.3s ease,
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      .chip:hover {
+        transform: translateY(-4px);
+        border-color: rgba(14, 165, 233, 0.45);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+      }
+      .chip i {
+        transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+      }
+      .chip:hover i {
+        transform: scale(1.25) rotate(-8deg);
+      }
+
+      .collection-number {
+        font-size: 4.2rem;
+        line-height: 1;
+        font-weight: 800;
+        color: rgba(100, 116, 139, 0.09);
+        letter-spacing: -0.08em;
+        transition:
+          color 0.3s ease,
+          transform 0.4s ease;
+      }
+      .collection-card {
+        position: relative;
+        overflow: hidden;
+        display: block;
+      }
+      .collection-card:hover .collection-number {
+        color: rgba(14, 165, 233, 0.16);
+        transform: translateX(-4px);
+      }
+      .collection-card::before {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        right: -80px;
+        top: -80px;
+        background: rgba(56, 189, 248, 0.1);
+        filter: blur(20px);
+        transition: transform 0.5s ease;
+      }
+      .collection-card:hover::before {
+        transform: scale(1.5);
+      }
+      .api-arrow {
+        transition:
+          transform 0.3s ease,
+          color 0.3s ease;
+      }
+      .collection-card:hover .api-arrow {
+        transform: translateX(5px);
+        color: #38bdf8;
+      }
+
+      .stat-line {
+        position: relative;
+      }
+      .stat-line::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 22px;
+        border-radius: 99px;
+        background: linear-gradient(#38bdf8, #818cf8);
+      }
+
+      .workflow-line {
+        position: absolute;
+        top: 38px;
+        left: 10%;
+        right: 10%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(56, 189, 248, 0.35),
+          rgba(129, 140, 248, 0.35),
+          transparent
+        );
+      }
+      .workflow-node {
+        position: relative;
+        z-index: 2;
+      }
+      .workflow-icon {
+        width: 76px;
+        height: 76px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+        font-size: 23px;
+        background: var(--solid);
+        border: 1px solid var(--border);
+        box-shadow: 0 16px 35px rgba(15, 23, 42, 0.08);
+        transition:
+          transform 0.35s ease,
+          box-shadow 0.35s ease,
+          border-color 0.35s ease;
+      }
+      .workflow-node:hover .workflow-icon {
+        transform: translateY(-7px) scale(1.04);
+        border-color: rgba(56, 189, 248, 0.45);
+        box-shadow: 0 22px 45px rgba(56, 189, 248, 0.12);
+      }
+
+      .back-top,
+      .whatsapp-float {
+        position: fixed;
+        right: 22px;
+        z-index: 60;
+        width: 49px;
+        height: 49px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(14px) scale(0.9);
+        transition:
+          transform 0.35s ease,
+          opacity 0.35s ease,
+          visibility 0.35s ease,
+          box-shadow 0.35s ease;
+      }
+      .back-top.show,
+      .whatsapp-float.show {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+      }
+      .whatsapp-float {
+        bottom: 82px;
+        color: #fff;
+        background: linear-gradient(145deg, #25d366, #16a34a);
+        box-shadow: 0 12px 35px rgba(37, 211, 102, 0.3);
+      }
+      .whatsapp-float.show::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        border: 2px solid #25d366;
+        animation: pulseRing 2.4s ease-out infinite;
+      }
+      .whatsapp-float.show:hover {
+        transform: translateY(-4px) scale(1.05);
+      }
+      .back-top {
+        bottom: 22px;
+        color: var(--text);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(15px);
+        backdrop-filter: blur(15px);
+      }
+      .back-top.show:hover {
+        transform: translateY(-4px);
+        border-color: rgba(14, 165, 233, 0.5);
+        color: #0ea5e9;
+      }
+      .whatsapp-label {
+        position: absolute;
+        right: 58px;
+        white-space: nowrap;
+        padding: 7px 10px;
+        border-radius: 9px;
+        background: var(--solid);
+        border: 1px solid var(--border);
+        color: var(--text2);
+        font-size: 10px;
+        font-weight: 700;
+        opacity: 0;
+        transform: translateX(5px);
+        pointer-events: none;
+        transition: 0.25s ease;
+      }
+      .whatsapp-float:hover .whatsapp-label {
+        opacity: 1;
+        transform: none;
+      }
+
+      .theme-toggle {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .theme-icon {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform 0.45s cubic-bezier(0.3, 1.4, 0.5, 1),
+          opacity 0.25s ease;
+      }
+      .theme-icon.moon {
+        opacity: 1;
+        transform: none;
+      }
+      .theme-icon.sun {
+        opacity: 0;
+        transform: rotate(-90deg) scale(0.5);
+      }
+      .dark .theme-icon.moon {
+        opacity: 0;
+        transform: rotate(90deg) scale(0.5);
+      }
+      .dark .theme-icon.sun {
+        opacity: 1;
+        transform: none;
+      }
+
+      .section-glow {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        filter: blur(100px);
+        pointer-events: none;
+        opacity: 0.4;
+      }
+      .metric {
+        position: relative;
+        overflow: hidden;
+      }
+      .metric::after {
+        content: "";
+        position: absolute;
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        right: -28px;
+        bottom: -28px;
+        background: rgba(56, 189, 248, 0.14);
+        filter: blur(12px);
+      }
+      .logo-glow {
+        position: relative;
+      }
+      .logo-glow::after {
+        content: "";
+        position: absolute;
+        inset: -5px;
+        border-radius: 22px;
+        background: rgba(56, 189, 248, 0.14);
+        filter: blur(12px);
+        z-index: -1;
+      }
+      .footer-link {
+        color: var(--muted);
+        transition: color 0.25s ease;
+      }
+      .footer-link:hover {
+        color: var(--text);
+      }
+      .soft-divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(148, 163, 184, 0.3),
+          transparent
+        );
+      }
+      .contact-item {
+        transition:
+          transform 0.3s ease,
+          border-color 0.3s ease,
+          background 0.3s ease;
+      }
+      .contact-item:hover {
+        transform: translateX(5px);
+        border-color: rgba(14, 165, 233, 0.5);
+      }
+
+      .marquee {
+        overflow: hidden;
+        border-block: 1px solid var(--border);
+        background: var(--surface);
+        padding: 1rem 0;
+        -webkit-mask-image: linear-gradient(
+          90deg,
+          transparent,
+          black 10%,
+          black 90%,
+          transparent
+        );
+        mask-image: linear-gradient(
+          90deg,
+          transparent,
+          black 10%,
+          black 90%,
+          transparent
+        );
+      }
+      .marquee-track {
+        display: flex;
+        gap: 2.5rem;
+        width: max-content;
+        animation: marquee 32s linear infinite;
+      }
+      .marquee:hover .marquee-track {
+        animation-play-state: paused;
+      }
+      .marquee-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text2);
+        white-space: nowrap;
+      }
+      .marquee-item i {
+        color: var(--sky);
+      }
+      @keyframes marquee {
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      .typed-caret {
+        display: inline-block;
+        width: 2px;
+        height: 1em;
+        margin-left: 3px;
+        vertical-align: -0.12em;
+        background: var(--sky);
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 1023px) {
+        .hero-device {
+          max-width: 760px;
+          margin-inline: auto;
+        }
+        .workflow-line {
+          display: none;
+        }
+      }
+      @media (max-width: 767px) {
+        #hero {
+          padding: 8rem 1rem 4.5rem;
+        }
+        #hero h1 {
+          font-size: clamp(2.35rem, 11vw, 3.25rem);
+          line-height: 1.04;
+        }
+        #hero .hero-shell {
+          padding: 0.4rem;
+          border-radius: 1.5rem;
+        }
+        #hero .win {
+          border-radius: 1.15rem;
+        }
+        #hero .win-bar {
+          padding: 0.7rem 0.8rem;
+        }
+        #hero .win-url {
+          font-size: 9px;
+          padding: 0.25rem 0.6rem;
+        }
+        #hero .info-card {
+          left: 0.55rem;
+          right: 0.55rem;
+          bottom: 0.55rem;
+        }
+        #hero .info-title {
+          font-size: 12px;
+        }
+        #hero .info-shield {
+          width: 34px;
+          height: 34px;
+        }
+        #hero .tag {
+          font-size: 8px;
+          padding: 0.25rem 0.48rem;
+        }
+        #hero .metric {
+          padding: 0.75rem 0.55rem;
+        }
+      }
+      @media (max-width: 640px) {
+        .back-top,
+        .whatsapp-float {
+          right: 14px;
+          width: 45px;
+          height: 45px;
+          border-radius: 14px;
+        }
+        .whatsapp-float {
+          bottom: 72px;
+        }
+        .back-top {
+          bottom: 14px;
+        }
+        .whatsapp-label {
+          display: none;
+        }
+        .collection-number {
+          font-size: 3.35rem;
+        }
+        .hero-device {
+          transform: none !important;
+        }
+        .info-card {
+          left: 0.65rem;
+          right: 0.65rem;
+          bottom: 0.65rem;
+          padding: 0.85rem;
+        }
+        .info-title {
+          font-size: 13px;
+        }
+        .tag {
+          font-size: 9px;
+          padding: 0.28rem 0.55rem;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+        .reveal {
+          opacity: 1;
+          transform: none;
+        }
+        #preloader {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="antialiased">
+    <div id="preloader">
+      <div class="loader-logo">
+        <img src="./assets/logo.jpg" alt="Tabeebi" />
+      </div>
+      <div class="loader-bar"><span></span></div>
+    </div>
+
+    <div id="progress"></div>
+    <div id="cursorGlow"></div>
+
+    <a
+      id="whatsappFloat"
+      href="https://wa.me/201203435021"
+      target="_blank"
+      rel="noopener"
+      class="whatsapp-float"
+      aria-label="Contact Tabeebi on WhatsApp"
+    >
+      <i class="fa-brands fa-whatsapp text-xl"></i>
+      <span class="whatsapp-label">+20 120 343 5021</span>
+    </a>
+
+    <button
+      id="backTop"
+      class="back-top"
+      aria-label="Back to top"
+      type="button"
+    >
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <nav
+      id="navbar"
+      class="fixed top-0 left-0 right-0 z-50 border-b border-transparent px-4 sm:px-6 py-4 transition-all duration-300"
+    >
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between gap-4">
+          <a href="#hero" class="flex items-center gap-3">
+            <div
+              class="logo-glow w-10 h-10 sm:w-11 sm:h-11 rounded-2xl overflow-hidden border border-sky-500/20 shadow-lg shadow-sky-500/10 shrink-0"
+            >
+              <img
+                src="./assets/logo.jpg"
+                alt="Tabeebi"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <span
+                class="block text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white"
+                >Tabeebi</span
+              >
+              <span
+                class="hidden sm:block text-[8px] uppercase tracking-[0.25em] text-slate-500 font-bold"
+                >Healthcare Technology</span
+              >
+            </div>
+          </a>
+
+          <div
+            id="desktopLinks"
+            class="hidden xl:flex items-center gap-7 text-sm font-semibold"
+          ></div>
+
+          <div class="flex items-center gap-2">
+            <div class="hidden lg:flex items-center gap-2">
+              <button
+                id="themeToggle"
+                type="button"
+                class="btn btn-icon theme-toggle w-10 h-10 rounded-xl flex items-center justify-center"
+                aria-label="Toggle theme"
+              >
+                <i class="theme-icon moon fa-solid fa-moon"></i>
+                <i class="theme-icon sun fa-solid fa-sun"></i>
+              </button>
+              <a
+                href="./Dashboard/index.html"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-outline flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-bold"
+                ><i class="fa-solid fa-code"></i>API Reference</a
+              >
+              <a
+                href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-amber flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-extrabold"
+                ><i class="fa-solid fa-book-open"></i>Postman</a
+              >
+              <a
+                href="https://github.com/MohamedFouad22/Tabeebi-Application.git"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-icon w-10 h-10 rounded-xl flex items-center justify-center"
+                title="GitHub Repository"
+                aria-label="GitHub"
+                ><i class="fa-brands fa-github"></i
+              ></a>
+            </div>
+            <button
+              id="menuBtn"
+              class="btn btn-icon xl:hidden w-10 h-10 rounded-xl flex items-center justify-center"
+              aria-label="Toggle menu"
+              aria-expanded="false"
+              aria-controls="mobileMenu"
+              type="button"
+            >
+              <i class="fa-solid fa-bars"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="mobileMenu" class="mobile-menu xl:hidden">
+          <div
+            class="mt-4 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-xl"
+          >
+            <div id="mobileLinks" class="grid gap-1"></div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
+              <button
+                id="mobileThemeToggle"
+                type="button"
+                class="btn btn-icon flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold"
+              >
+                <i class="fa-solid fa-circle-half-stroke"></i>Theme
+              </button>
+              <a
+                href="./Dashboard/index.html"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-outline flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold"
+                ><i class="fa-solid fa-code"></i>API</a
+              >
+              <a
+                href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-amber flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-extrabold"
+                ><i class="fa-solid fa-book-open"></i>Postman</a
+              >
+              <a
+                href="https://github.com/MohamedFouad22/Tabeebi-Application.git"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-icon flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold"
+                ><i class="fa-brands fa-github"></i>GitHub</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section
+        id="hero"
+        class="relative min-h-screen flex items-center pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      >
+        <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+        <canvas id="particles"></canvas>
+        <div class="hero-orb orb-one"></div>
+        <div class="hero-orb orb-two"></div>
+        <div class="hero-orb orb-three"></div>
+
+        <div class="relative max-w-[1280px] mx-auto w-full z-10">
+          <div
+            class="grid lg:grid-cols-[1fr_.96fr] gap-12 lg:gap-16 items-center"
+          >
+            <div class="min-w-0">
+              <div
+                class="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-sky-500/10 border border-sky-500/25 text-sky-600 dark:text-sky-400 text-[10px] sm:text-xs font-bold mb-6"
+              >
+                <span class="relative flex h-2 w-2">
+                  <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"
+                  ></span>
+                  <span
+                    class="relative inline-flex rounded-full h-2 w-2 bg-sky-400"
+                  ></span>
+                </span>
+                Healthcare Technology Platform
+              </div>
+
+              <h1
+                class="text-[2.7rem] sm:text-5xl lg:text-[4.45rem] xl:text-[4.7rem] font-black leading-[1.03] tracking-[-.055em] text-slate-900 dark:text-white"
+              >
+                Healthcare<br />
+                <span class="gradient-text">Without Friction.</span><br />
+                <span class="text-slate-400 dark:text-slate-500"
+                  >Built in one ecosystem.</span
+                >
+              </h1>
+
+              <p
+                class="mt-7 max-w-2xl text-sm sm:text-base lg:text-lg leading-8 text-slate-600 dark:text-slate-400"
+              >
+                Tabeebi is an integrated healthcare platform connecting
+                patients, doctors, diagnostic facilities and suppliers through
+                appointments, labs and radiology, pharmacy, medical equipment,
+                secure payments and real-time consultation.
+              </p>
+
+              <p
+                class="mt-4 text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200"
+              >
+                Built for
+                <span id="typed" class="text-sky-600 dark:text-sky-400"></span
+                ><span class="typed-caret"></span>
+              </p>
+
+              <div class="flex flex-col sm:flex-row gap-3 mt-9">
+                <a
+                  href="./Dashboard/index.html"
+                  target="_blank"
+                  rel="noopener"
+                  class="btn btn-primary shine flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-extrabold text-sm"
+                >
+                  <i class="fa-solid fa-code"></i>Explore API Reference<i
+                    class="fa-solid fa-arrow-right text-xs opacity-80"
+                  ></i>
+                </a>
+                <a
+                  href="https://github.com/MohamedFouad22/Tabeebi-Application.git"
+                  target="_blank"
+                  rel="noopener"
+                  class="btn btn-dark flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-extrabold text-sm"
+                >
+                  <i class="fa-brands fa-github text-lg"></i>GitHub Repository<i
+                    class="fa-solid fa-arrow-up-right-from-square text-xs opacity-60"
+                  ></i>
+                </a>
+              </div>
+
+              <div
+                class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mt-10"
+              >
+                <div class="metric card rounded-2xl px-3 py-4 sm:px-4 reveal">
+                  <p
+                    class="counter text-xl sm:text-2xl font-black text-slate-900 dark:text-white"
+                    data-target="12"
+                  >
+                    0
+                  </p>
+                  <p
+                    class="mt-1 text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-500"
+                  >
+                    Collections
+                  </p>
+                </div>
+                <div class="metric card rounded-2xl px-3 py-4 sm:px-4 reveal">
+                  <p
+                    class="counter text-xl sm:text-2xl font-black text-slate-900 dark:text-white"
+                    data-target="5"
+                  >
+                    0
+                  </p>
+                  <p
+                    class="mt-1 text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-500"
+                  >
+                    User Roles
+                  </p>
+                </div>
+                <div class="metric card rounded-2xl px-3 py-4 sm:px-4 reveal">
+                  <p
+                    class="counter text-xl sm:text-2xl font-black text-slate-900 dark:text-white"
+                    data-target="5"
+                    data-suffix="+"
+                  >
+                    0
+                  </p>
+                  <p
+                    class="mt-1 text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-500"
+                  >
+                    Security Layers
+                  </p>
+                </div>
+                <div class="metric card rounded-2xl px-3 py-4 sm:px-4 reveal">
+                  <p
+                    class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white"
+                  >
+                    Live
+                  </p>
+                  <p
+                    class="mt-1 text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-500"
+                  >
+                    Consultation
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div id="heroDevice" class="relative hero-device min-w-0">
+              <div
+                class="absolute -inset-10 rounded-[3rem] bg-gradient-to-br from-sky-500/10 via-indigo-500/5 to-purple-500/10 blur-3xl"
+              ></div>
+
+              <div class="relative gradient-border rounded-[2rem] p-[1px]">
+                <div class="hero-shell floating">
+                  <div class="win">
+                    <div class="win-bar">
+                      <div class="flex items-center gap-2">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-rose-500"
+                        ></span>
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-amber-500"
+                        ></span>
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-emerald-500"
+                        ></span>
+                      </div>
+                      <span class="win-url"
+                        ><i class="fa-solid fa-lock"></i>tabeebi.platform</span
+                      >
+                      <span class="w-12"></span>
+                    </div>
+
+                    <div class="win-body">
+                      <img
+                        src="./assets/logo.jpg"
+                        alt="Tabeebi Healthcare Platform"
+                        class="hero-image"
+                      />
+                      <div class="hero-fade"></div>
+                      <div class="scan"></div>
+                      <div class="live-badge">
+                        <span class="live-dot"></span>Live Consultation
+                      </div>
+
+                      <div class="info-card">
+                        <div class="flex items-center justify-between gap-4">
+                          <div>
+                            <p class="info-eyebrow">
+                              Unified Healthcare Ecosystem
+                            </p>
+                            <p class="info-title">
+                              One platform. Multiple healthcare flows.
+                            </p>
+                          </div>
+                          <div class="info-shield">
+                            <i class="fa-solid fa-shield-halved"></i>
+                          </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-4">
+                          <span class="tag">Appointments</span>
+                          <span class="tag">Labs &amp; Radiology</span>
+                          <span class="tag">Pharmacy</span>
+                          <span class="tag">Equipment</span>
+                          <span class="tag">Payments</span>
+                          <span class="tag">Chat</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="float-badge floating-slow -left-5 top-20">
+                <div
+                  class="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/25 flex items-center justify-center text-sky-500"
+                >
+                  <i class="fa-solid fa-code text-sm"></i>
+                </div>
+                <div><small>API</small><b>12 Collections</b></div>
+              </div>
+
+              <div
+                class="float-badge floating-slow -right-4 -bottom-5"
+                style="animation-delay: -3s"
+              >
+                <div
+                  class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-500"
+                >
+                  <i class="fa-solid fa-shield-halved text-sm"></i>
+                </div>
+                <div><small>Security</small><b>Protected Backend</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="marquee" aria-hidden="true">
+        <div id="marqueeTrack" class="marquee-track"></div>
+      </div>
+
+      <section
+        id="platform"
+        class="relative py-24 sm:py-28 px-5 sm:px-6 border-b border-slate-200/70 dark:border-slate-800/60 bg-white/50 dark:bg-slate-950/40"
+      >
+        <div class="section-glow bg-sky-400/10 -left-40 top-20"></div>
+        <div class="max-w-7xl mx-auto">
+          <div class="max-w-3xl mx-auto text-center reveal">
+            <span
+              class="inline-flex px-3 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-[.18em]"
+              >The Platform</span
+            >
+            <h2
+              class="mt-5 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white"
+            >
+              Everything connected through
+              <span class="gradient-text">one backend.</span>
+            </h2>
+            <p
+              class="mt-5 text-sm sm:text-base leading-7 text-slate-600 dark:text-slate-400"
+            >
+              Tabeebi brings the main healthcare workflows together through a
+              modular backend architecture designed around authentication,
+              validation, commerce, appointments and real-time communication.
+            </p>
+          </div>
+
+          <div id="platformGrid" class="grid md:grid-cols-3 gap-5 mt-14"></div>
+        </div>
+      </section>
+
+      <section id="workflow" class="relative py-24 sm:py-28 px-5 sm:px-6">
+        <div class="max-w-7xl mx-auto">
+          <div class="max-w-3xl mx-auto text-center reveal">
+            <span
+              class="inline-flex px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-[.18em]"
+              >How It Connects</span
+            >
+            <h2
+              class="mt-5 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white"
+            >
+              One flow from <span class="gradient-text">access to action.</span>
+            </h2>
+            <p
+              class="mt-5 text-sm sm:text-base leading-7 text-slate-600 dark:text-slate-400"
+            >
+              The platform connects authentication, healthcare services,
+              commerce and communication into a single backend workflow.
+            </p>
+          </div>
+
+          <div
+            id="workflowGrid"
+            class="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16"
+          >
+            <div class="workflow-line"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="collections" class="relative py-24 sm:py-28 px-5 sm:px-6">
+        <div class="max-w-7xl mx-auto">
+          <div
+            class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 reveal"
+          >
+            <div class="max-w-3xl">
+              <span
+                class="inline-flex px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-[.18em]"
+                >API Reference</span
+              >
+              <h2
+                class="mt-5 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white"
+              >
+                Explore every <span class="gradient-text">API collection.</span>
+              </h2>
+              <p
+                class="mt-5 text-sm sm:text-base leading-7 text-slate-600 dark:text-slate-400"
+              >
+                Browse the available collections and open their dedicated
+                documentation pages for endpoints, request bodies,
+                authentication requirements and response examples.
+              </p>
+            </div>
+            <a
+              href="./Dashboard/index.html"
+              target="_blank"
+              rel="noopener"
+              class="btn btn-outline shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold"
+              >Open API Hub<i class="fa-solid fa-arrow-right text-xs"></i
+            ></a>
+          </div>
+
+          <div
+            id="collectionGrid"
+            class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-14"
+          ></div>
+        </div>
+      </section>
+
+      <section
+        id="roles"
+        class="relative py-24 sm:py-28 px-5 sm:px-6 border-y border-slate-200/70 dark:border-slate-800/60 bg-white/50 dark:bg-slate-950/40"
+      >
+        <div class="max-w-7xl mx-auto">
+          <div class="max-w-3xl mx-auto text-center reveal">
+            <span
+              class="inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-[.18em]"
+              >Access Control</span
+            >
+            <h2
+              class="mt-5 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white"
+            >
+              Five roles, <span class="gradient-text">clear permissions.</span>
+            </h2>
+            <p
+              class="mt-5 text-sm sm:text-base leading-7 text-slate-600 dark:text-slate-400"
+            >
+              Role-based authorization keeps platform actions separated between
+              patients, doctors, suppliers, diagnostic facilities and
+              administrators.
+            </p>
+          </div>
+
+          <div
+            id="rolesGrid"
+            class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mt-14"
+          ></div>
+        </div>
+      </section>
+
+      <section id="security" class="relative py-24 sm:py-28 px-5 sm:px-6">
+        <div class="max-w-7xl mx-auto">
+          <div
+            class="grid lg:grid-cols-[.9fr_1.1fr] gap-12 lg:gap-16 items-center"
+          >
+            <div class="reveal">
+              <span
+                class="inline-flex px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-[.18em]"
+                >Security</span
+              >
+              <h2
+                class="mt-5 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white"
+              >
+                Security built into
+                <span class="gradient-text">the backend.</span>
+              </h2>
+              <p
+                class="mt-5 text-sm sm:text-base leading-7 text-slate-600 dark:text-slate-400"
+              >
+                Every request moves through multiple validation and protection
+                layers before reaching the application logic.
+              </p>
+              <div class="mt-8 space-y-4">
+                <div
+                  class="stat-line pl-5 text-sm text-slate-600 dark:text-slate-400"
+                >
+                  JWT authentication with role-based authorization
+                </div>
+                <div
+                  class="stat-line pl-5 text-sm text-slate-600 dark:text-slate-400"
+                >
+                  Zod schema validation for incoming payloads
+                </div>
+                <div
+                  class="stat-line pl-5 text-sm text-slate-600 dark:text-slate-400"
+                >
+                  Protected routes and controlled resource access
+                </div>
+                <div
+                  class="stat-line pl-5 text-sm text-slate-600 dark:text-slate-400"
+                >
+                  Secure payment flow with Stripe integration
+                </div>
+              </div>
+            </div>
+
+            <div id="securityGrid" class="grid sm:grid-cols-2 gap-4"></div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="stack"
+        class="relative py-24 sm:py-28 px-5 sm:px-6 border-y border-slate-200/70 dark:border-slate-800/60 bg-white/50 dark:bg-slate-950/40"
+      >
+        <div class="max-w-7xl mx-auto">
+          <div class="max-w-3xl mx-auto text-center reveal">
+            <span
+              class="inline-flex px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-[.18em]"
+              >Technology</span
+            >
+            <h2
+              class="mt-5 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white"
+            >
+              Built with a
+              <span class="gradient-text">modern backend stack.</span>
+            </h2>
+            <p
+              class="mt-5 text-sm sm:text-base leading-7 text-slate-600 dark:text-slate-400"
+            >
+              Technologies used to build, secure, validate, connect and deploy
+              the Tabeebi platform.
+            </p>
+          </div>
+
+          <div id="stackGrid" class="grid md:grid-cols-2 gap-5 mt-14"></div>
+        </div>
+      </section>
+
+      <section id="contact" class="relative py-24 sm:py-28 px-5 sm:px-6">
+        <div class="section-glow bg-indigo-400/10 right-0 bottom-0"></div>
+
+        <div class="max-w-7xl mx-auto">
+          <div
+            class="grid lg:grid-cols-[.85fr_1.15fr] gap-10 lg:gap-16 items-start"
+          >
+            <div class="reveal">
+              <span
+                class="inline-flex px-3 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-[.18em]"
+                >Get in Touch</span
+              >
+              <h2
+                class="mt-5 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white"
+              >
+                Let's build something <span class="gradient-text">useful.</span>
+              </h2>
+              <p
+                class="mt-5 text-sm sm:text-base leading-7 text-slate-600 dark:text-slate-400 max-w-xl"
+              >
+                Explore the source code, browse the API reference, check the
+                Postman documentation or get in touch directly.
+              </p>
+              <div id="contactList" class="mt-9 space-y-3"></div>
+            </div>
+
+            <div
+              class="gradient-border card rounded-[2rem] p-5 sm:p-7 lg:p-8 shadow-2xl reveal"
+            >
+              <div class="flex items-center gap-3 mb-7">
+                <div
+                  class="w-11 h-11 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-500 flex items-center justify-center"
+                >
+                  <i class="fa-solid fa-paper-plane"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-900 dark:text-white">
+                    Send a Message
+                  </h3>
+                  <p class="text-xs text-slate-500 mt-1">
+                    Have an idea or question?
+                  </p>
+                </div>
+              </div>
+
+              <form id="contactForm" class="space-y-4">
+                <div>
+                  <label
+                    for="name"
+                    class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2"
+                    >Full Name</label
+                  >
+                  <input
+                    id="name"
+                    type="text"
+                    required
+                    autocomplete="name"
+                    placeholder="John Doe"
+                    class="input-style w-full rounded-xl px-4 py-3.5 text-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="email"
+                    class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2"
+                    >Email Address</label
+                  >
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    autocomplete="email"
+                    placeholder="john@example.com"
+                    class="input-style w-full rounded-xl px-4 py-3.5 text-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="message"
+                    class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2"
+                    >Message</label
+                  >
+                  <textarea
+                    id="message"
+                    rows="5"
+                    required
+                    placeholder="Your message here..."
+                    class="input-style w-full rounded-xl px-4 py-3.5 text-sm resize-none"
+                  ></textarea>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    id="sendWhatsapp"
+                    class="btn w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-extrabold text-sm bg-emerald-500 hover:bg-emerald-600 text-white transition"
+                  >
+                    <i class="fa-brands fa-whatsapp"></i>Send via WhatsApp
+                  </button>
+                  <button
+                    type="button"
+                    id="sendGmail"
+                    class="btn btn-primary shine w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-extrabold text-sm"
+                  >
+                    <i class="fa-solid fa-envelope"></i>Send via Gmail
+                  </button>
+                </div>
+                <p class="text-center text-[11px] text-slate-500">
+                  Your message opens ready to send in WhatsApp or Gmail.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer
+      class="border-t border-slate-200/70 dark:border-slate-800/70 px-5 sm:px-6 py-8 bg-white/50 dark:bg-slate-950/40"
+    >
+      <div
+        class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-5"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-xl overflow-hidden border border-sky-500/20"
+          >
+            <img
+              src="./assets/logo.jpg"
+              alt="Tabeebi"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <p class="text-sm font-bold text-slate-700 dark:text-slate-300">
+              Tabeebi
+            </p>
+            <p class="text-[10px] text-slate-500">
+              Healthcare Technology Platform
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-wrap items-center justify-center gap-5 text-xs font-semibold"
+        >
+          <a
+            href="./Dashboard/index.html"
+            target="_blank"
+            rel="noopener"
+            class="footer-link"
+            >API Reference</a
+          >
+          <a
+            href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+            target="_blank"
+            rel="noopener"
+            class="footer-link"
+            >Postman</a
+          >
+          <a
+            href="https://github.com/MohamedFouad22/Tabeebi-Application.git"
+            target="_blank"
+            rel="noopener"
+            class="footer-link"
+            >GitHub</a
+          >
+          <a
+            href="https://wa.me/201203435021"
+            target="_blank"
+            rel="noopener"
+            class="footer-link hover:!text-emerald-500"
+            >WhatsApp</a
+          >
+        </div>
+
+        <p class="text-[10px] text-slate-500">
+          © 2026 Tabeebi. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const $ = (s, r = document) => r.querySelector(s);
+      const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+      const html = document.documentElement;
+      const fine = matchMedia("(hover:hover) and (pointer:fine)").matches;
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const DATA = {
+        nav: [
+          ["hero", "Home"],
+          ["platform", "Platform"],
+          ["workflow", "Workflow"],
+          ["collections", "API"],
+          ["roles", "Roles"],
+          ["security", "Security"],
+          ["stack", "Technology"],
+          ["contact", "Contact"],
+        ],
+        marquee: [
+          "Appointments",
+          "Labs & Radiology",
+          "Pharmacy",
+          "Medical Equipment",
+          "Secure Payments",
+          "Live Chat",
+          "Coupons",
+          "Orders",
+          "Role-based Access",
+          "Real-time Consultation",
+        ],
+        platform: [
+          [
+            "sky",
+            "fa-calendar-check",
+            "Healthcare",
+            "Appointments",
+            "Doctors, clinics, labs, radiology centers, schedules, available slots, bookings, payment status and appointment history.",
+            "Healthcare workflow",
+          ],
+          [
+            "emerald",
+            "fa-cart-shopping",
+            "Commerce",
+            "Healthcare Commerce",
+            "Products, brands, categories, inventory, carts, coupons, orders and online payments.",
+            "Commerce workflow",
+          ],
+          [
+            "purple",
+            "fa-comments",
+            "Communication",
+            "Doctor Consultation",
+            "Real-time communication between patients and doctors for digital consultations.",
+            "Real-time communication",
+          ],
+        ],
+        workflow: [
+          [
+            "sky",
+            "fa-user-lock",
+            "Authenticate",
+            "Users enter through protected authentication and role-based access.",
+          ],
+          [
+            "indigo",
+            "fa-stethoscope",
+            "Choose a Service",
+            "Book healthcare services or explore products through the platform.",
+          ],
+          [
+            "emerald",
+            "fa-credit-card",
+            "Complete the Flow",
+            "Handle booking, cart, order and payment operations through protected APIs.",
+          ],
+          [
+            "purple",
+            "fa-comments",
+            "Stay Connected",
+            "Continue communication through real-time consultation and notifications.",
+          ],
+        ],
+        collections: [
+          [
+            "auth",
+            "sky",
+            "fa-lock",
+            "Auth",
+            "Authentication, registration, verification and access control flows.",
+          ],
+          [
+            "user",
+            "cyan",
+            "fa-user",
+            "User",
+            "User profiles, account information and user-related operations.",
+          ],
+          [
+            "brand",
+            "emerald",
+            "fa-building",
+            "Brand",
+            "Healthcare product brands and supplier-related management.",
+          ],
+          [
+            "category",
+            "amber",
+            "fa-layer-group",
+            "Category",
+            "Product categories and catalog organization endpoints.",
+          ],
+          [
+            "product",
+            "purple",
+            "fa-box-open",
+            "Product",
+            "Healthcare products, pricing, stock and product management.",
+          ],
+          [
+            "clinic",
+            "rose",
+            "fa-hospital",
+            "Clinic",
+            "Clinic profiles, information and healthcare facility management.",
+          ],
+          [
+            "doctor",
+            "indigo",
+            "fa-user-doctor",
+            "Doctors",
+            "Doctor profiles, specialties, schedules and professional operations.",
+          ],
+          [
+            "appointment",
+            "teal",
+            "fa-calendar-check",
+            "Appointment",
+            "Booking, available slots, appointment lifecycle and history.",
+          ],
+          [
+            "coupon",
+            "orange",
+            "fa-ticket",
+            "Coupon",
+            "Discount codes, availability, usage limits and coupon management.",
+          ],
+          [
+            "cart",
+            "pink",
+            "fa-cart-shopping",
+            "Cart",
+            "Cart items, quantities, pricing, discounts and checkout preparation.",
+          ],
+          [
+            "order",
+            "violet",
+            "fa-receipt",
+            "Order",
+            "Orders, totals, payment state, fulfilment and order lifecycle.",
+          ],
+        ],
+        roles: [
+          [
+            "sky",
+            "fa-user",
+            "USER",
+            "Patient",
+            "Books appointments, chats with doctors, shops for healthcare products and completes payments.",
+          ],
+          [
+            "emerald",
+            "fa-stethoscope",
+            "DOCTOR",
+            "Physician",
+            "Manages profile and schedules, handles appointments and communicates with patients.",
+          ],
+          [
+            "amber",
+            "fa-building",
+            "COMPANY",
+            "Supplier",
+            "Publishes and manages healthcare products, inventory and incoming orders.",
+          ],
+          [
+            "rose",
+            "fa-flask-vial",
+            "FACILITY",
+            "Lab & Radiology",
+            "Registers medical labs and radiology centers, manages tests, scans, schedules and patient bookings.",
+          ],
+          [
+            "purple",
+            "fa-user-shield",
+            "ADMIN",
+            "Administrator",
+            "Oversees platform users, doctors, companies, facilities, coupons, orders and system operations.",
+          ],
+        ],
+        security: [
+          [
+            "sky",
+            "fa-globe",
+            "CORS",
+            "Controls which origins can access the API.",
+          ],
+          [
+            "amber",
+            "fa-helmet-safety",
+            "Helmet",
+            "Adds security-focused HTTP headers.",
+          ],
+          [
+            "rose",
+            "fa-gauge-high",
+            "Rate Limiting",
+            "Limits abusive traffic and brute-force attempts.",
+          ],
+          [
+            "emerald",
+            "fa-filter",
+            "HPP",
+            "Helps prevent HTTP parameter pollution.",
+          ],
+        ],
+        stack: [
+          [
+            "Backend Core",
+            "sky",
+            4,
+            [
+              ["fa-brands fa-node-js", "emerald", "Node.js"],
+              ["fa-solid fa-server", "indigo", "Express.js"],
+              ["fa-solid fa-code", "sky", "TypeScript"],
+              ["fa-solid fa-database", "purple", "MongoDB"],
+              ["fa-solid fa-diagram-project", "amber", "Mongoose"],
+              ["fa-solid fa-check-double", "rose", "Zod"],
+            ],
+          ],
+          [
+            "Communication",
+            "emerald",
+            3,
+            [
+              ["fa-solid fa-bolt", "sky", "Socket.io"],
+              ["fa-brands fa-whatsapp", "emerald", "WhatsApp"],
+              ["fa-solid fa-envelope", "amber", "Nodemailer"],
+            ],
+            "Payments & Storage",
+            "amber",
+            [
+              ["fa-brands fa-stripe", "indigo", "Stripe"],
+              ["fa-brands fa-aws", "amber", "AWS"],
+              ["fa-solid fa-cloud-arrow-up", "sky", "Multer"],
+            ],
+          ],
+          [
+            "Authentication & Cryptography",
+            "rose",
+            4,
+            [
+              ["fa-solid fa-key", "rose", "JWT"],
+              ["fa-solid fa-lock", "emerald", "Password Hashing"],
+              ["fa-solid fa-fingerprint", "purple", "Crypto"],
+              ["fa-solid fa-shield-halved", "sky", "Security"],
+            ],
+          ],
+        ],
+        contacts: [
+          [
+            "./Dashboard/index.html",
+            "sky",
+            "fa-solid fa-code",
+            "API Reference",
+            "Explore all API collections",
+            true,
+          ],
+          [
+            "https://documenter.getpostman.com/view/43128963/2sBYB4M7cT",
+            "amber",
+            "fa-solid fa-book-open",
+            "Postman",
+            "Open Postman documentation",
+            true,
+          ],
+          [
+            "https://github.com/MohamedFouad22/Tabeebi-Application.git",
+            "slate",
+            "fa-brands fa-github",
+            "Repository",
+            "View Tabeebi on GitHub",
+            true,
+          ],
+          [
+            "https://wa.me/201203435021",
+            "emerald",
+            "fa-brands fa-whatsapp",
+            "WhatsApp",
+            "+20 120 343 5021",
+            true,
+          ],
+          [
+            "mailto:mohmed.foouad@gmail.com",
+            "sky",
+            "fa-solid fa-envelope",
+            "Email",
+            "mohmed.foouad@gmail.com",
+            false,
+          ],
+        ],
+      };
+
+      const chip = (icon, color, label) =>
+        `<div class="chip rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/60 p-4"><i class="${icon} text-${color}-500 text-xl"></i><p class="mt-3 text-sm font-bold text-slate-800 dark:text-slate-200">${label}</p></div>`;
+
+      const render = {
+        nav() {
+          $("#desktopLinks").innerHTML = DATA.nav
+            .map(([id, l]) => `<a href="#${id}" class="nav-link">${l}</a>`)
+            .join("");
+          $("#mobileLinks").innerHTML = DATA.nav
+            .map(
+              ([id, l]) =>
+                `<a href="#${id}" class="mobile-link px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900">${l}</a>`,
+            )
+            .join("");
+        },
+        marquee() {
+          const items = DATA.marquee
+            .map(
+              (t) =>
+                `<span class="marquee-item"><i class="fa-solid fa-heart-pulse"></i>${t.replace("&", "&amp;")}</span>`,
+            )
+            .join("");
+          $("#marqueeTrack").innerHTML = items + items;
+        },
+        platform() {
+          $("#platformGrid").innerHTML = DATA.platform
+            .map(
+              ([c, i, k, t, d, f]) => `
+<div class="card card-hover tilt rounded-3xl p-7 reveal">
+<div class="icon-pop w-14 h-14 rounded-2xl bg-${c}-500/10 border border-${c}-500/20 text-${c}-500 flex items-center justify-center text-xl"><i class="fa-solid ${i}"></i></div>
+<p class="mt-6 text-[10px] uppercase tracking-[.18em] text-${c}-500 font-bold">${k}</p>
+<h3 class="mt-2 text-xl font-bold text-slate-900 dark:text-white">${t}</h3>
+<p class="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-400">${d}</p>
+<div class="soft-divider mt-6"></div>
+<div class="mt-5 flex items-center gap-2 text-xs font-bold text-slate-500"><i class="fa-solid fa-circle-check text-${c}-500"></i>${f}</div>
+</div>`,
+            )
+            .join("");
+        },
+        workflow() {
+          $("#workflowGrid").insertAdjacentHTML(
+            "beforeend",
+            DATA.workflow
+              .map(
+                ([c, i, t, d], n) => `
+<div class="workflow-node text-center reveal">
+<div class="workflow-icon text-${c}-500"><i class="fa-solid ${i}"></i></div>
+<p class="mt-6 text-xs uppercase tracking-[.18em] font-bold text-${c}-500">0${n + 1}</p>
+<h3 class="mt-2 text-lg font-bold text-slate-900 dark:text-white">${t}</h3>
+<p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">${d}</p>
+</div>`,
+              )
+              .join(""),
+          );
+        },
+        collections() {
+          const card = (href, extra, c, i, t, d, num, cta) => `
+<a href="${href}" target="_blank" rel="noopener" class="collection-card ${extra} card card-hover tilt rounded-3xl p-6 reveal">
+<div class="flex items-start justify-between"><div class="icon-pop w-11 h-11 rounded-xl bg-${c}-500/10 border border-${c}-500/20 text-${c}-500 flex items-center justify-center"><i class="fa-solid ${i}"></i></div><span class="collection-number">${num}</span></div>
+<h3 class="mt-6 text-lg font-bold text-slate-900 dark:text-white">${t}</h3>
+<p class="mt-2 text-xs leading-6 text-slate-500 dark:text-slate-400">${d}</p>
+<div class="mt-5 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-500"><span>${cta}</span><i class="api-arrow fa-solid fa-arrow-right"></i></div>
+</a>`;
+          $("#collectionGrid").innerHTML =
+            DATA.collections
+              .map(([s, c, i, t, d], n) =>
+                card(
+                  "./Dashboard/index.html",
+                  "",
+                  c,
+                  i,
+                  t,
+                  d,
+                  String(n + 1).padStart(2, "0"),
+                  "View APIs",
+                ),
+              )
+              .join("") +
+            card(
+              "./Dashboard/index.html",
+              "gradient-border",
+              "sky",
+              "fa-plus",
+              "API Hub",
+              "Central documentation hub for the complete Tabeebi backend API.",
+              "12",
+              "Open Hub",
+            );
+        },
+        roles() {
+          $("#rolesGrid").innerHTML = DATA.roles
+            .map(
+              ([c, i, k, t, d]) => `
+<div class="card card-hover tilt rounded-3xl p-6 reveal">
+<div class="icon-pop w-12 h-12 rounded-2xl bg-${c}-500/10 border border-${c}-500/20 text-${c}-500 flex items-center justify-center text-lg"><i class="fa-solid ${i}"></i></div>
+<p class="mt-5 text-[11px] font-mono font-bold tracking-widest text-${c}-500">${k}</p>
+<h3 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">${t}</h3>
+<p class="mt-3 text-xs leading-6 text-slate-600 dark:text-slate-400">${d}</p>
+</div>`,
+            )
+            .join("");
+        },
+        security() {
+          $("#securityGrid").innerHTML =
+            DATA.security
+              .map(
+                ([c, i, t, d]) => `
+<div class="card card-hover tilt rounded-2xl p-5 reveal">
+<i class="icon-pop fa-solid ${i} text-${c}-500 text-xl"></i>
+<p class="mt-4 text-sm font-bold text-slate-900 dark:text-white">${t}</p>
+<p class="mt-1 text-xs leading-6 text-slate-500 dark:text-slate-400">${d}</p>
+</div>`,
+              )
+              .join("") +
+            `
+<div class="card card-hover tilt rounded-2xl p-5 reveal sm:col-span-2">
+<div class="flex items-start gap-4">
+<div class="icon-pop w-11 h-11 shrink-0 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-500 flex items-center justify-center"><i class="fa-solid fa-broom"></i></div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">MongoDB Input Protection</p>
+<p class="mt-1 text-xs leading-6 text-slate-500 dark:text-slate-400">Sanitizes incoming data to reduce the risk of NoSQL injection through malicious query operators.</p>
+</div>
+</div>
+</div>`;
+        },
+        stack() {
+          const block = (title, color, cols, items) =>
+            `<p class="text-xs uppercase tracking-widest text-${color}-600 dark:text-${color}-400 font-bold mb-5">${title.replace("&", "&amp;")}</p><div class="grid grid-cols-2 sm:grid-cols-${cols} gap-3">${items.map((x) => chip(x[0], x[1], x[2])).join("")}</div>`;
+          $("#stackGrid").innerHTML = DATA.stack
+            .map(
+              ([t, c, cols, items, t2, c2, items2], n) => `
+<div class="card rounded-3xl p-6 sm:p-7 reveal ${n === 2 ? "md:col-span-2" : ""}">
+${block(t, c, cols, items)}
+${t2 ? `<div class="mt-7">${block(t2, c2, 3, items2)}</div>` : ""}
+</div>`,
+            )
+            .join("");
+        },
+        contacts() {
+          const item = ([href, c, icon, label, text, ext]) => {
+            const border =
+              c === "slate"
+                ? "border-slate-300 dark:border-slate-700 bg-slate-500/5"
+                : `border-${c}-500/25 bg-${c}-500/5`;
+            return `
+<a href="${href}" ${ext ? 'target="_blank" rel="noopener"' : ""} class="contact-item flex items-center gap-4 p-4 rounded-2xl border ${border}">
+<div class="w-11 h-11 shrink-0 rounded-xl bg-${c}-500/10 border border-${c}-500/20 flex items-center justify-center text-${c}-500"><i class="${icon}"></i></div>
+<div class="min-w-0">
+<p class="text-[10px] uppercase tracking-widest text-${c}-500 font-bold">${label}</p>
+<p class="mt-1 text-sm text-slate-700 dark:text-slate-200 truncate">${text}</p>
+</div>
+<i class="fa-solid ${ext ? "fa-arrow-up-right-from-square" : "fa-arrow-right"} ml-auto text-slate-400"></i>
+</a>`;
+          };
+          $("#contactList").innerHTML =
+            DATA.contacts.map(item).join("") +
+            `
+<div class="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
+<div class="w-11 h-11 shrink-0 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-500"><i class="fa-solid fa-location-dot"></i></div>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-purple-500 font-bold">Location</p>
+<p class="mt-1 text-sm text-slate-700 dark:text-slate-300">6th of October, Giza, Egypt</p>
+</div>
+</div>`;
+        },
+      };
+
+      Object.values(render).forEach((fn) => fn());
+
+      const navbar = $("#navbar");
+      const menuBtn = $("#menuBtn");
+      const mobileMenu = $("#mobileMenu");
+      const menuIcon = $("i", menuBtn);
+      const backTop = $("#backTop");
+      const whatsappFloat = $("#whatsappFloat");
+      const progress = $("#progress");
+      const navLinks = $$(".nav-link");
+      const sections = $$("main section[id]");
+
+      const toggleTheme = () => {
+        html.classList.toggle("dark");
+        try {
+          localStorage.setItem(
+            "tabeebi-theme",
+            html.classList.contains("dark") ? "dark" : "light",
+          );
+        } catch (e) {}
+      };
+      $("#themeToggle").addEventListener("click", toggleTheme);
+      $("#mobileThemeToggle").addEventListener("click", toggleTheme);
+
+      addEventListener("load", () =>
+        setTimeout(() => $("#preloader").classList.add("hide"), 450),
+      );
+
+      const setMenu = (open) => {
+        mobileMenu.classList.toggle("active", open);
+        menuIcon.classList.toggle("fa-xmark", open);
+        menuIcon.classList.toggle("fa-bars", !open);
+        menuBtn.setAttribute("aria-expanded", String(open));
+      };
+      menuBtn.addEventListener("click", () =>
+        setMenu(!mobileMenu.classList.contains("active")),
+      );
+      $$(".mobile-link").forEach((l) =>
+        l.addEventListener("click", () => setMenu(false)),
+      );
+      backTop.addEventListener("click", () =>
+        scrollTo({ top: 0, behavior: "smooth" }),
+      );
+
+      const onScroll = () => {
+        const y = scrollY;
+        const max = html.scrollHeight - innerHeight;
+        progress.style.width = (max > 0 ? (y / max) * 100 : 0) + "%";
+        navbar.classList.toggle("nav-scrolled", y > 20);
+        backTop.classList.toggle("show", y > 500);
+        whatsappFloat.classList.toggle("show", y > 500);
+        let current = "hero";
+        sections.forEach((s) => {
+          if (y >= s.offsetTop - 220) current = s.id;
+        });
+        navLinks.forEach((l) =>
+          l.classList.toggle(
+            "active",
+            l.getAttribute("href") === "#" + current,
+          ),
+        );
+      };
+      addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const siblings = [...el.parentElement.children].filter((c) =>
+              c.classList.contains("reveal"),
+            );
+            el.style.transitionDelay =
+              Math.min(Math.max(0, siblings.indexOf(el)), 8) * 70 + "ms";
+            el.classList.add("show");
+            setTimeout(() => {
+              el.style.transitionDelay = "";
+              el.classList.add("done");
+            }, 1000);
+            revealObserver.unobserve(el);
+          });
+        },
+        { threshold: 0.12 },
+      );
+      $$(".reveal").forEach((el) => revealObserver.observe(el));
+
+      const counterObserver = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const target = Number(el.dataset.target);
+            const suffix = el.dataset.suffix || "";
+            const start = performance.now();
+            const tick = (now) => {
+              const p = Math.min((now - start) / 1300, 1);
+              el.textContent =
+                Math.floor(target * (1 - Math.pow(1 - p, 3))) + suffix;
+              if (p < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+            obs.unobserve(el);
+          });
+        },
+        { threshold: 0.7 },
+      );
+      $$(".counter").forEach((c) => counterObserver.observe(c));
+
+      if (fine && !reduced) {
+        const glow = $("#cursorGlow");
+        addEventListener(
+          "mousemove",
+          (e) => {
+            glow.style.left = e.clientX + "px";
+            glow.style.top = e.clientY + "px";
+          },
+          { passive: true },
+        );
+
+        const tiltFn = (el, depth, lift, pers) => {
+          el.addEventListener("mousemove", (e) => {
+            const r = el.getBoundingClientRect();
+            const ry = ((e.clientX - r.left) / r.width - 0.5) * depth;
+            const rx = ((e.clientY - r.top) / r.height - 0.5) * -depth;
+            el.style.transition =
+              "transform .08s ease-out,border-color .3s ease,box-shadow .4s ease";
+            el.style.transform = `perspective(${pers}px) translateY(${lift}px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+          });
+          el.addEventListener("mouseleave", () => {
+            el.style.transition = "";
+            el.style.transform = "";
+          });
+        };
+
+        const heroDevice = $("#heroDevice");
+        if (matchMedia("(min-width:768px)").matches)
+          tiltFn(heroDevice, 6, -2, 1200);
+        $$(".tilt").forEach((c) => tiltFn(c, 6, -6, 900));
+      }
+
+      document.addEventListener("click", (e) => {
+        const btn = e.target.closest(".btn");
+        if (!btn) return;
+        const r = btn.getBoundingClientRect();
+        const size = Math.max(r.width, r.height);
+        const span = document.createElement("span");
+        span.className = "ripple";
+        span.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - r.left - size / 2}px;top:${e.clientY - r.top - size / 2}px`;
+        btn.appendChild(span);
+        setTimeout(() => span.remove(), 650);
+      });
+
+      const typedEl = $("#typed");
+      const words = [
+        "patients who want faster care",
+        "doctors who manage their day",
+        "labs and radiology centers that serve patients",
+        "suppliers who sell medical products",
+        "admins who keep everything running",
+      ];
+      let w = 0,
+        c = 0,
+        del = false;
+      const type = () => {
+        const word = words[w];
+        typedEl.textContent = word.slice(0, c);
+        if (!del && c < word.length) {
+          c++;
+          setTimeout(type, 55);
+        } else if (!del) {
+          del = true;
+          setTimeout(type, 1600);
+        } else if (c > 0) {
+          c--;
+          setTimeout(type, 28);
+        } else {
+          del = false;
+          w = (w + 1) % words.length;
+          setTimeout(type, 300);
+        }
+      };
+      if (reduced) typedEl.textContent = words[0];
+      else type();
+
+      const canvas = $("#particles");
+      const ctx = canvas.getContext("2d");
+      let pts = [];
+      const sizeCanvas = () => {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        const n = Math.min(46, Math.floor(canvas.width / 30));
+        pts = Array.from({ length: n }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+          r: Math.random() * 1.6 + 0.8,
+        }));
+      };
+      const draw = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const rgb = html.classList.contains("dark")
+          ? "125,211,252"
+          : "14,165,233";
+        pts.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${rgb},.55)`;
+          ctx.fill();
+          for (let j = i + 1; j < pts.length; j++) {
+            const q = pts[j];
+            const d = Math.hypot(p.x - q.x, p.y - q.y);
+            if (d < 120) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.strokeStyle = `rgba(${rgb},${0.16 * (1 - d / 120)})`;
+              ctx.stroke();
+            }
+          }
+        });
+        requestAnimationFrame(draw);
+      };
+      if (!reduced) {
+        sizeCanvas();
+        draw();
+        let rt;
+        addEventListener("resize", () => {
+          clearTimeout(rt);
+          rt = setTimeout(sizeCanvas, 150);
+        });
+      }
+
+      const form = $("#contactForm");
+      const readForm = () => {
+        if (!form.reportValidity()) return null;
+        return {
+          name: $("#name").value.trim(),
+          email: $("#email").value.trim(),
+          message: $("#message").value.trim(),
+        };
+      };
+      form.addEventListener("submit", (e) => e.preventDefault());
+      $("#sendWhatsapp").addEventListener("click", () => {
+        const d = readForm();
+        if (!d) return;
+        const text = encodeURIComponent(
+          `Hi, I'm ${d.name}\nEmail: ${d.email}\n\n${d.message}`,
+        );
+        window.open(
+          `https://wa.me/201203435021?text=${text}`,
+          "_blank",
+          "noopener",
+        );
+      });
+      $("#sendGmail").addEventListener("click", () => {
+        const d = readForm();
+        if (!d) return;
+        const su = encodeURIComponent("Tabeebi Contact - " + d.name);
+        const body = encodeURIComponent(
+          `Name: ${d.name}\nEmail: ${d.email}\n\nMessage:\n${d.message}`,
+        );
+        window.open(
+          `https://mail.google.com/mail/?view=cm&fs=1&to=mohmed.foouad@gmail.com&su=${su}&body=${body}`,
+          "_blank",
+          "noopener",
+        );
+      });
+    </script>
+  </body>
+</html>

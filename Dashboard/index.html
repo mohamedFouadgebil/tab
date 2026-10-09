@@ -1,0 +1,2758 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f7fb" />
+    <meta name="description" content="Tabeebi API Documentation Dashboard" />
+    <title>Tabeebi | API Documentation</title>
+
+    <link rel="icon" href="../assets/browser image.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <script>
+      try {
+        var t = localStorage.getItem("tabeebi-theme");
+        if (
+          t === "dark" ||
+          (!t && matchMedia("(prefers-color-scheme: dark)").matches)
+        )
+          document.documentElement.classList.add("dark");
+      } catch (e) {}
+    </script>
+
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --bg-secondary: #ffffff;
+        --card: rgba(255, 255, 255, 0.94);
+        --card-solid: #ffffff;
+        --text: #344054;
+        --heading: #101828;
+        --muted: #667085;
+        --muted-light: #98a2b3;
+        --border: rgba(15, 23, 42, 0.08);
+        --border-strong: rgba(15, 23, 42, 0.13);
+        --primary: #4f46e5;
+        --primary-light: #6366f1;
+        --primary-soft: rgba(79, 70, 229, 0.08);
+        --secondary: #0891b2;
+        --success: #059669;
+        --danger: #dc2626;
+        --shadow-sm: 0 8px 30px rgba(15, 23, 42, 0.055);
+        --shadow: 0 22px 65px rgba(15, 23, 42, 0.1);
+        --grid: rgba(79, 70, 229, 0.045);
+
+        --code-bg: #0b1220;
+        --code-border: rgba(148, 163, 184, 0.15);
+        --code-text: #e2e8f0;
+        --code-key: #a5b4fc;
+        --code-string: #67e8f9;
+        --code-value: #86efac;
+        --code-punctuation: #cbd5e1;
+      }
+
+      html.dark {
+        --bg: #050816;
+        --bg-secondary: #0a1020;
+        --card: rgba(13, 20, 39, 0.88);
+        --card-solid: #0c1327;
+        --text: #d0d5dd;
+        --heading: #ffffff;
+        --muted: #94a3b8;
+        --muted-light: #64748b;
+        --border: rgba(148, 163, 184, 0.1);
+        --border-strong: rgba(148, 163, 184, 0.16);
+        --primary: #818cf8;
+        --primary-light: #a5b4fc;
+        --primary-soft: rgba(129, 140, 248, 0.11);
+        --secondary: #22d3ee;
+        --success: #34d399;
+        --danger: #f87171;
+        --shadow-sm: 0 10px 35px rgba(0, 0, 0, 0.2);
+        --shadow: 0 25px 75px rgba(0, 0, 0, 0.32);
+        --grid: rgba(129, 140, 248, 0.04);
+
+        --code-bg: #030712;
+        --code-border: rgba(148, 163, 184, 0.13);
+        --code-text: #e2e8f0;
+        --code-key: #a5b4fc;
+        --code-string: #67e8f9;
+        --code-value: #86efac;
+        --code-punctuation: #cbd5e1;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 100px;
+      }
+
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: var(--text);
+        background:
+          radial-gradient(
+            circle at 8% 5%,
+            rgba(99, 102, 241, 0.08),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 92% 20%,
+            rgba(6, 182, 212, 0.07),
+            transparent 25%
+          ),
+          var(--bg);
+        font-family: "Inter", sans-serif;
+        transition:
+          background 0.3s ease,
+          color 0.3s ease;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.65),
+          transparent 75%
+        );
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+      }
+
+      ::selection {
+        color: #ffffff;
+        background: var(--primary);
+      }
+
+      ::-webkit-scrollbar {
+        width: 9px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: linear-gradient(var(--primary), var(--secondary));
+      }
+
+      .scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 3000;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        box-shadow: 0 0 14px rgba(79, 70, 229, 0.4);
+      }
+
+      .container {
+        width: min(1240px, calc(100% - 48px));
+        margin-inline: auto;
+      }
+
+      .site-nav,
+      .site-footer {
+        --sn-border: rgba(100, 116, 139, 0.18);
+        --sn-text: #0f172a;
+        --sn-text2: #475569;
+        --sn-muted: #64748b;
+        --sn-title: #0f172a;
+        --sn-bg: rgba(255, 255, 255, 0.86);
+        --sn-solid: #ffffff;
+        --sn-sky: #0284c7;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        line-height: 1.5;
+      }
+
+      html.dark .site-nav,
+      html.dark .site-footer {
+        --sn-border: rgba(71, 85, 105, 0.35);
+        --sn-text: #f8fafc;
+        --sn-text2: #94a3b8;
+        --sn-muted: #64748b;
+        --sn-title: #ffffff;
+        --sn-bg: rgba(5, 8, 22, 0.86);
+        --sn-solid: #0b1122;
+        --sn-sky: #38bdf8;
+      }
+
+      .site-nav {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 2000;
+        padding: 16px;
+        border-bottom: 1px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .site-nav.scrolled {
+        background: var(--sn-bg);
+        border-color: var(--sn-border);
+        -webkit-backdrop-filter: blur(25px);
+        backdrop-filter: blur(25px);
+        box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+      }
+
+      .site-nav-spacer {
+        height: 73px;
+      }
+
+      .site-nav-inner {
+        max-width: 80rem;
+        margin-inline: auto;
+      }
+
+      .site-nav-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .site-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .site-brand-logo {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        overflow: hidden;
+        border: 1px solid rgba(14, 165, 233, 0.2);
+        border-radius: 16px;
+        box-shadow:
+          0 10px 15px -3px rgba(14, 165, 233, 0.1),
+          0 4px 6px -4px rgba(14, 165, 233, 0.1);
+      }
+
+      .site-brand-logo img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .site-brand-title {
+        display: block;
+        color: var(--sn-title);
+        font-size: 20px;
+        font-weight: 900;
+        line-height: 28px;
+        letter-spacing: -0.025em;
+      }
+
+      .site-brand-sub {
+        display: none;
+        color: #64748b;
+        font-size: 8px;
+        font-weight: 700;
+        line-height: 12px;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+      }
+
+      .site-links {
+        display: none;
+        align-items: center;
+        gap: 28px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+      }
+
+      .site-link {
+        position: relative;
+        padding: 8px 0;
+        color: var(--sn-text2);
+        transition: color 0.25s ease;
+      }
+
+      .site-link::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #38bdf8, #818cf8);
+        transition: width 0.3s ease;
+      }
+
+      .site-link:hover {
+        color: var(--sn-text);
+      }
+
+      .site-link:hover::after {
+        width: 100%;
+      }
+
+      .site-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .site-actions-desktop {
+        display: none;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sn-btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        overflow: hidden;
+        border: 0;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 20px;
+        cursor: pointer;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.3s ease,
+          background 0.3s ease,
+          border-color 0.3s ease,
+          color 0.25s ease;
+      }
+
+      .sn-btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .sn-btn:active {
+        transform: translateY(0) scale(0.98);
+      }
+
+      .sn-square {
+        width: 40px;
+        height: 40px;
+      }
+
+      .sn-btn-icon {
+        background: var(--sn-solid);
+        color: var(--sn-text2);
+        border: 1px solid var(--sn-border);
+      }
+
+      .sn-btn-icon:hover {
+        color: var(--sn-sky);
+        border-color: var(--sn-sky);
+      }
+
+      .sn-btn-outline {
+        height: 40px;
+        padding: 0 16px;
+        background: rgba(14, 165, 233, 0.07);
+        color: #0369a1;
+        border: 1px solid rgba(14, 165, 233, 0.3);
+        font-weight: 700;
+      }
+
+      html.dark .sn-btn-outline {
+        color: #38bdf8;
+      }
+
+      .sn-btn-outline:hover {
+        background: rgba(14, 165, 233, 0.14);
+      }
+
+      .sn-btn-amber {
+        height: 40px;
+        padding: 0 16px;
+        background: linear-gradient(120deg, #f59e0b, #f97316);
+        color: #1c1917;
+        box-shadow: 0 10px 26px rgba(249, 115, 22, 0.22);
+        font-weight: 800;
+      }
+
+      .sn-theme {
+        isolation: isolate;
+      }
+
+      .sn-theme-icon {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform 0.45s cubic-bezier(0.3, 1.4, 0.5, 1),
+          opacity 0.25s ease;
+      }
+
+      .sn-theme-icon.moon {
+        opacity: 1;
+        transform: none;
+      }
+
+      .sn-theme-icon.sun {
+        opacity: 0;
+        transform: rotate(-90deg) scale(0.5);
+      }
+
+      html.dark .sn-theme-icon.moon {
+        opacity: 0;
+        transform: rotate(90deg) scale(0.5);
+      }
+
+      html.dark .sn-theme-icon.sun {
+        opacity: 1;
+        transform: none;
+      }
+
+      .sn-ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.45);
+        transform: scale(0);
+        animation: sn-ripple 0.65s ease-out;
+        pointer-events: none;
+      }
+
+      @keyframes sn-ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+
+      .site-mobile {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          max-height 0.45s ease,
+          opacity 0.25s ease,
+          visibility 0.45s ease;
+      }
+
+      .site-mobile.open {
+        max-height: 900px;
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .site-mobile-panel {
+        margin-top: 16px;
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      }
+
+      html.dark .site-mobile-panel {
+        border-color: #1e293b;
+        background: #020617;
+      }
+
+      .site-mobile-links {
+        display: grid;
+        gap: 4px;
+      }
+
+      .site-mobile-link {
+        padding: 12px 16px;
+        border-radius: 12px;
+        color: #475569;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+        transition:
+          background 0.25s ease,
+          transform 0.25s ease;
+      }
+
+      html.dark .site-mobile-link {
+        color: #cbd5e1;
+      }
+
+      .site-mobile-link:hover {
+        background: #f1f5f9;
+        transform: translateX(4px);
+      }
+
+      html.dark .site-mobile-link:hover {
+        background: #0f172a;
+      }
+
+      .site-mobile-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .site-mobile-actions .sn-btn {
+        height: auto;
+        padding: 12px 16px;
+      }
+
+      .site-footer {
+        padding: 32px 20px;
+        border-top: 1px solid rgba(226, 232, 240, 0.7);
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      html.dark .site-footer {
+        border-top-color: rgba(30, 41, 59, 0.7);
+        background: rgba(2, 6, 23, 0.4);
+      }
+
+      .site-footer-inner {
+        max-width: 80rem;
+        margin-inline: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .site-footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .site-footer-logo {
+        width: 36px;
+        height: 36px;
+        overflow: hidden;
+        border: 1px solid rgba(14, 165, 233, 0.2);
+        border-radius: 12px;
+      }
+
+      .site-footer-logo img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .site-footer-name {
+        color: #334155;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 20px;
+      }
+
+      html.dark .site-footer-name {
+        color: #cbd5e1;
+      }
+
+      .site-footer-tag,
+      .site-footer-copy {
+        color: #64748b;
+        font-size: 10px;
+        line-height: 15px;
+      }
+
+      .site-footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 16px;
+      }
+
+      .site-footer-link {
+        color: var(--sn-muted);
+        transition: color 0.25s ease;
+      }
+
+      .site-footer-link:hover {
+        color: var(--sn-text);
+      }
+
+      .site-footer-link.whatsapp:hover {
+        color: #10b981;
+      }
+
+      @media (min-width: 640px) {
+        .site-nav {
+          padding: 16px 24px;
+        }
+
+        .site-nav-spacer {
+          height: 77px;
+        }
+
+        .site-brand-logo {
+          width: 44px;
+          height: 44px;
+        }
+
+        .site-brand-title {
+          font-size: 24px;
+          line-height: 32px;
+        }
+
+        .site-brand-sub {
+          display: block;
+        }
+
+        .site-mobile-actions {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .site-footer {
+          padding: 32px 24px;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .site-actions-desktop {
+          display: flex;
+        }
+
+        .site-footer-inner {
+          flex-direction: row;
+        }
+      }
+
+      @media (min-width: 1280px) {
+        .site-links {
+          display: flex;
+        }
+
+        .sn-menu-btn,
+        .site-mobile {
+          display: none;
+        }
+      }
+
+      .hero {
+        position: relative;
+        min-height: 650px;
+        display: flex;
+        align-items: center;
+        padding: 85px 0 80px;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: -230px;
+        left: -220px;
+        width: 520px;
+        height: 520px;
+        border-radius: 50%;
+        background: rgba(99, 102, 241, 0.1);
+        filter: blur(90px);
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: -220px;
+        bottom: -230px;
+        width: 520px;
+        height: 520px;
+        border-radius: 50%;
+        background: rgba(6, 182, 212, 0.08);
+        filter: blur(90px);
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        width: min(1240px, calc(100% - 48px));
+        margin-inline: auto;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+        align-items: center;
+        gap: 75px;
+      }
+
+      .hero-copy {
+        min-width: 0;
+      }
+
+      .hero-badge {
+        width: fit-content;
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 13px;
+        border: 1px solid rgba(99, 102, 241, 0.18);
+        border-radius: 999px;
+        color: var(--primary);
+        background: var(--primary-soft);
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .hero-badge-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 0 5px rgba(5, 150, 105, 0.1);
+      }
+
+      .hero-title {
+        max-width: 820px;
+        margin-top: 23px;
+        color: var(--heading);
+        font-size: clamp(50px, 6vw, 82px);
+        line-height: 0.99;
+        font-weight: 900;
+        letter-spacing: -0.065em;
+      }
+
+      .hero-title span {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero-description {
+        max-width: 650px;
+        margin-top: 25px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.85;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 11px;
+        margin-top: 31px;
+      }
+
+      .hero-button {
+        min-height: 50px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 18px;
+        border-radius: 13px;
+        font-size: 12px;
+        font-weight: 850;
+        transition: 0.25s ease;
+      }
+
+      .hero-button.primary {
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        box-shadow: 0 12px 30px rgba(79, 70, 229, 0.2);
+      }
+
+      .hero-button.secondary {
+        color: var(--text);
+        border: 1px solid var(--border-strong);
+        background: var(--card);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .hero-button:hover {
+        transform: translateY(-3px);
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 22px;
+        margin-top: 30px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+      }
+
+      .hero-meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .hero-meta-item i {
+        color: var(--primary);
+      }
+
+      .hero-visual {
+        position: relative;
+        min-height: 430px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .visual-glow {
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.18),
+          rgba(6, 182, 212, 0.12)
+        );
+        filter: blur(65px);
+      }
+
+      .api-card {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 450px);
+        padding: 21px;
+        border: 1px solid var(--border-strong);
+        border-radius: 24px;
+        background: var(--card);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        transform: rotate(1.5deg);
+        transition: 0.45s ease;
+      }
+
+      .api-card:hover {
+        transform: rotate(0) translateY(-7px);
+      }
+
+      .api-card-top {
+        min-height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+
+      .window-dots {
+        display: flex;
+        gap: 6px;
+      }
+
+      .window-dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--muted-light);
+      }
+
+      .api-card-label {
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .code-window {
+        width: 100%;
+        min-height: 265px;
+        padding: 22px;
+        border: 1px solid var(--code-border);
+        border-radius: 17px;
+        background: var(--code-bg);
+        color: var(--code-text);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.03),
+          0 15px 35px rgba(0, 0, 0, 0.13);
+        overflow: hidden;
+      }
+
+      .code-line {
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        color: var(--code-punctuation);
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-size: 12px;
+        line-height: 1.7;
+        white-space: pre;
+      }
+
+      .code-key {
+        color: var(--code-key);
+      }
+
+      .code-string {
+        color: var(--code-string);
+      }
+
+      .code-value {
+        color: var(--code-value);
+      }
+
+      .code-punctuation {
+        color: var(--code-punctuation);
+      }
+
+      .section {
+        position: relative;
+        padding: 92px 0;
+      }
+
+      .section-header {
+        max-width: 720px;
+        margin-bottom: 40px;
+      }
+
+      .section-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 13px;
+        color: var(--primary);
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+      }
+
+      .section-kicker::before {
+        content: "";
+        width: 23px;
+        height: 2px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+      }
+
+      .section-title {
+        color: var(--heading);
+        font-size: clamp(32px, 4vw, 47px);
+        line-height: 1.08;
+        font-weight: 900;
+        letter-spacing: -0.055em;
+      }
+
+      .section-description {
+        max-width: 650px;
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.85;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 15px;
+      }
+
+      .info-card {
+        min-height: 155px;
+        position: relative;
+        padding: 22px;
+        border: 1px solid var(--border);
+        border-radius: 19px;
+        background: var(--card);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition: 0.3s ease;
+      }
+
+      .info-card::after {
+        content: "";
+        position: absolute;
+        right: -60px;
+        bottom: -65px;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: var(--primary-soft);
+      }
+
+      .info-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.2);
+        box-shadow: var(--shadow);
+      }
+
+      .info-icon {
+        width: 41px;
+        height: 41px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        color: var(--primary);
+        background: var(--primary-soft);
+        font-size: 15px;
+      }
+
+      .info-value {
+        margin-top: 18px;
+        color: var(--heading);
+        font-size: 24px;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+      }
+
+      .info-label {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .api-info-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+        gap: 17px;
+        margin-top: 17px;
+      }
+
+      .panel {
+        min-width: 0;
+        border: 1px solid var(--border);
+        border-radius: 21px;
+        background: var(--card);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+      }
+
+      .panel-header {
+        min-height: 61px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .panel-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--heading);
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .panel-title i {
+        color: var(--primary);
+      }
+
+      .method {
+        padding: 5px 9px;
+        border-radius: 6px;
+        color: #ffffff;
+        background: var(--success);
+        font-family: monospace;
+        font-size: 9px;
+        font-weight: 900;
+      }
+
+      .base-url-box {
+        padding: 20px;
+      }
+
+      .base-url {
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 13px 0 16px;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        background: rgba(127, 127, 127, 0.045);
+      }
+
+      .base-url code {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--secondary);
+        font-family: monospace;
+        font-size: 11px;
+        font-weight: 650;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .copy-button {
+        width: 37px;
+        height: 37px;
+        flex: 0 0 37px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--muted);
+        background: transparent;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .copy-button:hover {
+        color: var(--primary);
+        background: var(--primary-soft);
+      }
+
+      .details-list {
+        padding: 6px 20px 12px;
+      }
+
+      .detail-row {
+        min-height: 47px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .detail-row:last-child {
+        border-bottom: 0;
+      }
+
+      .detail-row strong {
+        color: var(--heading);
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .collections-section {
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(99, 102, 241, 0.025),
+          transparent
+        );
+      }
+
+      .collection-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .search-wrap {
+        position: relative;
+        width: min(430px, 100%);
+      }
+
+      .search-input {
+        width: 100%;
+        height: 48px;
+        padding: 0 44px;
+        border: 1px solid var(--border-strong);
+        border-radius: 13px;
+        outline: none;
+        color: var(--text);
+        background: var(--card);
+        box-shadow: var(--shadow-sm);
+        font-size: 12px;
+        transition: 0.25s ease;
+      }
+
+      .search-input::placeholder {
+        color: var(--muted);
+      }
+
+      .search-input:focus {
+        border-color: rgba(99, 102, 241, 0.4);
+        box-shadow:
+          0 0 0 4px var(--primary-soft),
+          var(--shadow-sm);
+      }
+
+      .search-icon {
+        position: absolute;
+        top: 50%;
+        left: 16px;
+        z-index: 1;
+        color: var(--muted);
+        font-size: 12px;
+        pointer-events: none;
+        transform: translateY(-50%);
+      }
+
+      .clear-search {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9px;
+        color: var(--muted);
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .clear-search.show {
+        display: flex;
+      }
+
+      .collection-count {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+      }
+
+      .collections-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .collection-card {
+        position: relative;
+        min-width: 0;
+        min-height: 210px;
+        padding: 21px;
+        border: 1px solid var(--border);
+        border-radius: 19px;
+        background: var(--card);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transform-style: preserve-3d;
+        transition:
+          border-color 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .collection-card::after {
+        content: "";
+        position: absolute;
+        right: -75px;
+        bottom: -85px;
+        width: 170px;
+        height: 170px;
+        border-radius: 50%;
+        background: var(--primary-soft);
+        transition: transform 0.4s ease;
+      }
+
+      .collection-card:hover {
+        border-color: rgba(99, 102, 241, 0.22);
+        box-shadow: var(--shadow);
+      }
+
+      .collection-card:hover::after {
+        transform: scale(1.45);
+      }
+
+      .collection-top {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+
+      .collection-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        color: var(--primary);
+        background: var(--primary-soft);
+        font-size: 16px;
+      }
+
+      .collection-number {
+        color: var(--muted-light);
+        font-family: monospace;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .collection-name {
+        position: relative;
+        z-index: 1;
+        margin-top: 19px;
+        color: var(--heading);
+        font-size: 17px;
+        font-weight: 900;
+        letter-spacing: -0.035em;
+      }
+
+      .collection-description {
+        position: relative;
+        z-index: 1;
+        min-height: 39px;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.75;
+      }
+
+      .collection-footer {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .endpoint-count {
+        color: var(--muted-light);
+        font-size: 9px;
+        font-weight: 750;
+      }
+
+      .view-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--primary);
+        font-size: 10px;
+        font-weight: 900;
+      }
+
+      .view-link i {
+        transition: 0.2s ease;
+      }
+
+      .collection-card:hover .view-link i {
+        transform: translateX(3px);
+      }
+
+      .empty-state {
+        display: none;
+        padding: 55px 20px;
+        border: 1px dashed var(--border-strong);
+        border-radius: 20px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 13px;
+      }
+
+      .empty-state.show {
+        display: block;
+      }
+
+      .empty-state i {
+        display: block;
+        margin-bottom: 11px;
+        font-size: 28px;
+        opacity: 0.5;
+      }
+
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .tool-card {
+        min-width: 0;
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: var(--card);
+        box-shadow: var(--shadow-sm);
+        transition: 0.3s ease;
+      }
+
+      .tool-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.22);
+        box-shadow: var(--shadow);
+      }
+
+      .tool-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        color: var(--primary);
+        background: var(--primary-soft);
+        font-size: 16px;
+      }
+
+      .tool-title {
+        margin-top: 18px;
+        color: var(--heading);
+        font-size: 16px;
+        font-weight: 900;
+      }
+
+      .tool-description {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.8;
+      }
+
+      .tool-link {
+        margin-top: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--primary);
+        font-size: 10px;
+        font-weight: 900;
+      }
+
+      .back-to-top {
+        position: fixed;
+        right: 23px;
+        bottom: 23px;
+        z-index: 1500;
+        width: 47px;
+        height: 47px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        box-shadow: 0 14px 32px rgba(79, 70, 229, 0.28);
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(12px);
+        transition: 0.3s ease;
+      }
+
+      .back-to-top.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .back-to-top:hover {
+        transform: translateY(-4px);
+      }
+
+      .cursor-glow {
+        position: fixed;
+        z-index: -1;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        pointer-events: none;
+        background: radial-gradient(
+          circle,
+          rgba(99, 102, 241, 0.06),
+          transparent 70%
+        );
+        transform: translate(-50%, -50%);
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.65s ease,
+          transform 0.65s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1180px) {
+        .hero-grid {
+          gap: 45px;
+        }
+
+        .collections-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 980px) {
+        .hero {
+          min-height: auto;
+          padding: 70px 0;
+        }
+
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-copy {
+          max-width: 780px;
+        }
+
+        .hero-visual {
+          min-height: 350px;
+        }
+
+        .api-info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .info-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .tools-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 800px) {
+        .container,
+        .hero-content {
+          width: calc(100% - 32px);
+        }
+
+        .hero-title {
+          font-size: clamp(43px, 10vw, 68px);
+        }
+
+        .section {
+          padding: 72px 0;
+        }
+
+        .collection-toolbar {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .search-wrap {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .container,
+        .hero-content {
+          width: calc(100% - 26px);
+        }
+
+        .hero {
+          padding: 58px 0 55px;
+        }
+
+        .hero-grid {
+          gap: 34px;
+        }
+
+        .hero-title {
+          margin-top: 18px;
+          font-size: clamp(40px, 12.5vw, 57px);
+        }
+
+        .hero-description {
+          font-size: 13px;
+          line-height: 1.85;
+        }
+
+        .hero-actions {
+          flex-direction: column;
+        }
+
+        .hero-button {
+          width: 100%;
+        }
+
+        .hero-meta {
+          flex-direction: column;
+          gap: 11px;
+        }
+
+        .hero-visual {
+          min-height: 285px;
+        }
+
+        .api-card {
+          width: 100%;
+          padding: 15px;
+          border-radius: 19px;
+          transform: none;
+        }
+
+        .code-window {
+          min-height: 245px;
+          padding: 17px;
+          border-radius: 14px;
+        }
+
+        .code-line {
+          min-height: 29px;
+          font-size: 9px;
+        }
+
+        .section {
+          padding: 58px 0;
+        }
+
+        .section-header {
+          margin-bottom: 29px;
+        }
+
+        .section-title {
+          font-size: 30px;
+        }
+
+        .section-description {
+          font-size: 12px;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+
+        .info-card {
+          min-height: 130px;
+          padding: 16px;
+          border-radius: 16px;
+        }
+
+        .info-icon {
+          width: 35px;
+          height: 35px;
+          border-radius: 10px;
+          font-size: 13px;
+        }
+
+        .info-value {
+          margin-top: 12px;
+          font-size: 18px;
+        }
+
+        .info-label {
+          font-size: 9px;
+        }
+
+        .api-info-grid {
+          gap: 11px;
+          margin-top: 11px;
+        }
+
+        .panel {
+          border-radius: 17px;
+        }
+
+        .panel-header {
+          min-height: 54px;
+          padding: 0 14px;
+        }
+
+        .base-url-box {
+          padding: 14px;
+        }
+
+        .base-url {
+          min-height: 53px;
+          padding-left: 12px;
+        }
+
+        .base-url code {
+          font-size: 8px;
+        }
+
+        .details-list {
+          padding: 5px 14px 10px;
+        }
+
+        .detail-row {
+          min-height: 42px;
+          font-size: 9px;
+        }
+
+        .detail-row strong {
+          font-size: 9px;
+        }
+
+        .collections-grid {
+          grid-template-columns: 1fr;
+          gap: 11px;
+        }
+
+        .collection-card {
+          min-height: 180px;
+          padding: 18px;
+          border-radius: 17px;
+        }
+
+        .collection-description {
+          min-height: auto;
+        }
+
+        .tools-grid {
+          gap: 11px;
+        }
+
+        .tool-card {
+          padding: 19px;
+          border-radius: 17px;
+        }
+
+        .back-to-top {
+          right: 14px;
+          bottom: calc(14px + env(safe-area-inset-bottom));
+          width: 44px;
+          height: 44px;
+          border-radius: 13px;
+        }
+
+        .cursor-glow {
+          display: none;
+        }
+      }
+
+      @media (max-width: 390px) {
+        .container,
+        .hero-content {
+          width: calc(100% - 20px);
+        }
+
+        .hero-title {
+          font-size: 37px;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .info-card {
+          min-height: 112px;
+        }
+
+        .code-window {
+          padding: 13px;
+        }
+
+        .code-line {
+          font-size: 8px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation: none !important;
+          transition: none !important;
+        }
+
+        .cursor-glow {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="scroll-progress" id="scrollProgress"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <header id="navbar" class="site-nav">
+      <div class="site-nav-inner">
+        <div class="site-nav-row">
+          <a href="../index.html#hero" class="site-brand">
+            <div class="site-brand-logo">
+              <img src="../assets/logo.jpg" alt="Tabeebi" />
+            </div>
+            <div>
+              <span class="site-brand-title">Tabeebi</span>
+              <span class="site-brand-sub">Healthcare Technology</span>
+            </div>
+          </a>
+
+          <div class="site-links">
+            <a href="../index.html#hero" class="site-link">Home</a>
+            <a href="../index.html#platform" class="site-link">Platform</a>
+            <a href="../index.html#workflow" class="site-link">Workflow</a>
+            <a href="../index.html#collections" class="site-link">API</a>
+            <a href="../index.html#roles" class="site-link">Roles</a>
+            <a href="../index.html#security" class="site-link">Security</a>
+            <a href="../index.html#stack" class="site-link">Technology</a>
+            <a href="../index.html#contact" class="site-link">Contact</a>
+          </div>
+
+          <div class="site-actions">
+            <div class="site-actions-desktop">
+              <button
+                id="themeToggle"
+                type="button"
+                class="sn-btn sn-btn-icon sn-square sn-theme"
+                aria-label="Toggle theme"
+              >
+                <i class="sn-theme-icon moon fa-solid fa-moon"></i>
+                <i class="sn-theme-icon sun fa-solid fa-sun"></i>
+              </button>
+
+              <a
+                href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+                target="_blank"
+                rel="noopener"
+                class="sn-btn sn-btn-amber"
+              >
+                <i class="fa-solid fa-book-open"></i>Postman
+              </a>
+              <a
+                href="https://github.com/MohamedFouad22/Tabeebi-Application.git"
+                target="_blank"
+                rel="noopener"
+                class="sn-btn sn-btn-icon sn-square"
+                title="GitHub Repository"
+                aria-label="GitHub"
+              >
+                <i class="fa-brands fa-github"></i>
+              </a>
+            </div>
+            <button
+              id="menuBtn"
+              type="button"
+              class="sn-btn sn-btn-icon sn-square sn-menu-btn"
+              aria-label="Toggle menu"
+              aria-expanded="false"
+              aria-controls="mobileMenu"
+            >
+              <i class="fa-solid fa-bars"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="mobileMenu" class="site-mobile">
+          <div class="site-mobile-panel">
+            <div class="site-mobile-links">
+              <a href="../index.html#hero" class="site-mobile-link">Home</a>
+              <a href="../index.html#platform" class="site-mobile-link"
+                >Platform</a
+              >
+              <a href="../index.html#workflow" class="site-mobile-link"
+                >Workflow</a
+              >
+              <a href="../index.html#collections" class="site-mobile-link"
+                >API</a
+              >
+              <a href="../index.html#roles" class="site-mobile-link">Roles</a>
+              <a href="../index.html#security" class="site-mobile-link"
+                >Security</a
+              >
+              <a href="../index.html#stack" class="site-mobile-link"
+                >Technology</a
+              >
+              <a href="../index.html#contact" class="site-mobile-link"
+                >Contact</a
+              >
+            </div>
+            <div class="site-mobile-actions">
+              <button
+                id="mobileThemeToggle"
+                type="button"
+                class="sn-btn sn-btn-icon"
+                style="font-weight: 700"
+              >
+                <i class="fa-solid fa-circle-half-stroke"></i>Theme
+              </button>
+              <a href="#overview" class="sn-btn sn-btn-outline">
+                <i class="fa-solid fa-code"></i>API
+              </a>
+              <a
+                href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+                target="_blank"
+                rel="noopener"
+                class="sn-btn sn-btn-amber"
+              >
+                <i class="fa-solid fa-book-open"></i>Postman
+              </a>
+              <a
+                href="https://github.com/MohamedFouad22/Tabeebi-Application.git"
+                target="_blank"
+                rel="noopener"
+                class="sn-btn sn-btn-icon"
+                style="font-weight: 700"
+              >
+                <i class="fa-brands fa-github"></i>GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="site-nav-spacer"></div>
+
+    <main>
+      <section class="hero" id="overview">
+        <div class="hero-content">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Tabeebi API v1
+              </div>
+
+              <h1 class="hero-title">
+                Build with
+                <span>confidence.</span>
+              </h1>
+
+              <p class="hero-description">
+                A clean, structured and developer-friendly API documentation
+                dashboard for the Tabeebi healthcare platform. Explore
+                collections, endpoints and integrations in one place.
+              </p>
+
+              <div class="hero-actions">
+                <a href="#collections" class="hero-button primary">
+                  <i class="fa-solid fa-layer-group"></i>
+                  Explore Collections
+                </a>
+
+                <a
+                  href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="hero-button secondary"
+                >
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  Open Postman
+                </a>
+              </div>
+
+              <div class="hero-meta">
+                <span class="hero-meta-item">
+                  <i class="fa-solid fa-circle-check"></i>
+                  REST API
+                </span>
+
+                <span class="hero-meta-item">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  JWT Authentication
+                </span>
+
+                <span class="hero-meta-item">
+                  <i class="fa-solid fa-bolt"></i>
+                  Node.js
+                </span>
+              </div>
+            </div>
+
+            <div class="hero-visual">
+              <div class="visual-glow"></div>
+
+              <div class="api-card">
+                <div class="api-card-top">
+                  <div class="window-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+
+                  <span class="api-card-label">API Response</span>
+                </div>
+
+                <div class="code-window">
+                  <div class="code-line">
+                    <span class="code-punctuation">{</span>
+                  </div>
+
+                  <div class="code-line">
+                    <span class="code-punctuation"> </span>
+                    <span class="code-key">"status"</span>
+                    <span class="code-punctuation">: </span>
+                    <span class="code-string">"success"</span>
+                    <span class="code-punctuation">,</span>
+                  </div>
+
+                  <div class="code-line">
+                    <span class="code-punctuation"> </span>
+                    <span class="code-key">"message"</span>
+                    <span class="code-punctuation">: </span>
+                    <span class="code-string">"Welcome"</span>
+                    <span class="code-punctuation">,</span>
+                  </div>
+
+                  <div class="code-line">
+                    <span class="code-punctuation"> </span>
+                    <span class="code-key">"data"</span>
+                    <span class="code-punctuation">: {</span>
+                  </div>
+
+                  <div class="code-line">
+                    <span class="code-punctuation"> </span>
+                    <span class="code-key">"version"</span>
+                    <span class="code-punctuation">: </span>
+                    <span class="code-string">"v1"</span>
+                  </div>
+
+                  <div class="code-line">
+                    <span class="code-punctuation"> }</span>
+                  </div>
+
+                  <div class="code-line">
+                    <span class="code-punctuation">}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="api-info">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="section-kicker">API Overview</div>
+
+            <h2 class="section-title">Everything you need to connect.</h2>
+
+            <p class="section-description">
+              Quick access to the core API configuration, authentication
+              information and project statistics.
+            </p>
+          </div>
+
+          <div class="info-grid reveal">
+            <div class="info-card">
+              <div class="info-icon">
+                <i class="fa-solid fa-layer-group"></i>
+              </div>
+              <div class="info-value">12</div>
+              <div class="info-label">Collections</div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-icon">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div class="info-value">4</div>
+              <div class="info-label">User Roles</div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-icon">
+                <i class="fa-solid fa-code-branch"></i>
+              </div>
+              <div class="info-value">v1</div>
+              <div class="info-label">API Version</div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-icon">
+                <i class="fa-brands fa-node-js"></i>
+              </div>
+              <div class="info-value">Node.js</div>
+              <div class="info-label">Backend Runtime</div>
+            </div>
+          </div>
+
+          <div class="api-info-grid">
+            <div class="panel reveal">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <i class="fa-solid fa-link"></i>
+                  Base URL
+                </div>
+                <span class="method">REST</span>
+              </div>
+
+              <div class="base-url-box">
+                <div class="base-url">
+                  <code id="baseUrl">http://localhost:3000/api/v1</code>
+
+                  <button
+                    class="copy-button"
+                    id="copyBaseUrl"
+                    aria-label="Copy base URL"
+                  >
+                    <i class="fa-regular fa-copy"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel reveal">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <i class="fa-solid fa-circle-info"></i>
+                  Configuration
+                </div>
+              </div>
+
+              <div class="details-list">
+                <div class="detail-row">
+                  <span>Protocol</span>
+                  <strong>HTTP / HTTPS</strong>
+                </div>
+
+                <div class="detail-row">
+                  <span>Format</span>
+                  <strong>JSON</strong>
+                </div>
+
+                <div class="detail-row">
+                  <span>Authentication</span>
+                  <strong>JWT</strong>
+                </div>
+
+                <div class="detail-row">
+                  <span>Version</span>
+                  <strong>v1</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section collections-section" id="collections">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="section-kicker">API Collections</div>
+
+            <h2 class="section-title">Explore every resource.</h2>
+
+            <p class="section-description">
+              Browse the available API collections and jump directly to the
+              documentation for each resource.
+            </p>
+          </div>
+
+          <div class="collection-toolbar reveal">
+            <div class="search-wrap">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+
+              <input
+                type="text"
+                id="searchInput"
+                class="search-input"
+                placeholder="Search collections..."
+                autocomplete="off"
+              />
+
+              <button
+                id="clearSearch"
+                class="clear-search"
+                aria-label="Clear search"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div class="collection-count" id="collectionCount">
+              12 collections
+            </div>
+          </div>
+
+          <div class="collections-grid reveal" id="collectionsGrid"></div>
+
+          <div class="empty-state" id="emptyState">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <div>No collections found.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tools">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="section-kicker">Developer Tools</div>
+
+            <h2 class="section-title">Work faster with your API.</h2>
+
+            <p class="section-description">
+              Useful resources for testing, exploring and working with the
+              Tabeebi API.
+            </p>
+          </div>
+
+          <div class="tools-grid">
+            <div class="tool-card reveal">
+              <div class="tool-icon">
+                <i class="fa-solid fa-paper-plane"></i>
+              </div>
+
+              <h3 class="tool-title">Postman</h3>
+
+              <p class="tool-description">
+                Test endpoints, inspect responses and explore the API collection
+                using Postman.
+              </p>
+
+              <a
+                href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="tool-link"
+              >
+                Open Postman
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+
+            <div class="tool-card reveal">
+              <div class="tool-icon">
+                <i class="fa-brands fa-github"></i>
+              </div>
+
+              <h3 class="tool-title">GitHub</h3>
+
+              <p class="tool-description">
+                Access the Tabeebi source code and follow the project
+                development workflow.
+              </p>
+
+              <a
+                href="https://github.com/MohamedFouad22/Tabeebi-Application.git"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="tool-link"
+              >
+                View Repository
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+
+            <div class="tool-card reveal">
+              <div class="tool-icon">
+                <i class="fa-solid fa-terminal"></i>
+              </div>
+
+              <h3 class="tool-title">REST Client</h3>
+
+              <p class="tool-description">
+                Use any REST client to send requests directly to the API using
+                the documented base URL and authentication.
+              </p>
+
+              <a href="#api-info" class="tool-link">
+                View Configuration
+                <i class="fa-solid fa-arrow-down"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer-inner">
+        <div class="site-footer-brand">
+          <div class="site-footer-logo">
+            <img src="../assets/logo.jpg" alt="Tabeebi" />
+          </div>
+          <div>
+            <p class="site-footer-name">Tabeebi</p>
+            <p class="site-footer-tag">Healthcare Technology Platform</p>
+          </div>
+        </div>
+
+        <div class="site-footer-links">
+          <a
+            href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+            target="_blank"
+            rel="noopener"
+            class="site-footer-link"
+            >Postman</a
+          >
+          <a
+            href="https://github.com/MohamedFouad22/Tabeebi-Application.git"
+            target="_blank"
+            rel="noopener"
+            class="site-footer-link"
+            >GitHub</a
+          >
+          <a
+            href="https://wa.me/201203435021"
+            target="_blank"
+            rel="noopener"
+            class="site-footer-link whatsapp"
+            >WhatsApp</a
+          >
+        </div>
+
+        <p class="site-footer-copy">© 2026 Tabeebi. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <script>
+      const collections = [
+        {
+          id: "auth",
+          name: "Authentication",
+          icon: "fa-solid fa-lock",
+          description:
+            "Register, login, refresh tokens and manage authentication flows.",
+          endpoints: "Auth endpoints",
+          url: "./API/auth.html",
+        },
+        {
+          id: "user",
+          name: "Users",
+          icon: "fa-solid fa-users",
+          description:
+            "Manage user profiles, accounts, roles and user-related operations.",
+          endpoints: "User endpoints",
+          url: "./API/user.html",
+        },
+        {
+          id: "brand",
+          name: "Brands",
+          icon: "fa-solid fa-tag",
+          description: "Create, update and manage healthcare product brands.",
+          endpoints: "Brand endpoints",
+          url: "./API/brand.html",
+        },
+        {
+          id: "category",
+          name: "Categories",
+          icon: "fa-solid fa-folder-tree",
+          description:
+            "Organize products and resources using structured categories.",
+          endpoints: "Category endpoints",
+          url: "./API/category.html",
+        },
+        {
+          id: "product",
+          name: "Products",
+          icon: "fa-solid fa-box-open",
+          description:
+            "Manage medical products, inventory information and product data.",
+          endpoints: "Product endpoints",
+          url: "./API/product.html",
+        },
+        {
+          id: "clinic",
+          name: "Clinics",
+          icon: "fa-solid fa-hospital",
+          description:
+            "Manage clinics, locations and healthcare service information.",
+          endpoints: "Clinic endpoints",
+          url: "./API/clinic.html",
+        },
+        {
+          id: "doctors",
+          name: "Doctors",
+          icon: "fa-solid fa-user-doctor",
+          description:
+            "Manage doctor profiles, specialties and healthcare providers.",
+          endpoints: "Doctor endpoints",
+          url: "./API/doctor.html",
+        },
+        {
+          id: "appointment",
+          name: "Appointments",
+          icon: "fa-solid fa-calendar-check",
+          description:
+            "Create, manage and track doctor and clinic appointments.",
+          endpoints: "Appointment endpoints",
+          url: "./API/appointment.html",
+        },
+        {
+          id: "coupon",
+          name: "Coupons",
+          icon: "fa-solid fa-ticket",
+          description:
+            "Manage promotional codes, discounts and coupon validation.",
+          endpoints: "Coupon endpoints",
+          url: "./API/coupon.html",
+        },
+        {
+          id: "cart",
+          name: "Cart",
+          icon: "fa-solid fa-cart-shopping",
+          description:
+            "Manage shopping carts, products and cart-related operations.",
+          endpoints: "Cart endpoints",
+          url: "./API/cart.html",
+        },
+        {
+          id: "order",
+          name: "Orders",
+          icon: "fa-solid fa-receipt",
+          description:
+            "Create, manage and track customer orders and order status.",
+          endpoints: "Order endpoints",
+          url: "./API/order.html",
+        },
+        {
+          id: "center",
+          name: "Medical Center",
+          icon: "fa-solid fa-receipt",
+          description:
+            "Create, manage and track customer facility and facility status.",
+          endpoints: "Facility endpoints",
+          url: "./API/facility.html",
+        },
+      ];
+
+      const collectionsGrid = document.getElementById("collectionsGrid");
+      const searchInput = document.getElementById("searchInput");
+      const clearSearch = document.getElementById("clearSearch");
+      const collectionCount = document.getElementById("collectionCount");
+      const emptyState = document.getElementById("emptyState");
+      const themeToggle = document.getElementById("themeToggle");
+      const mobileThemeToggle = document.getElementById("mobileThemeToggle");
+      const menuBtn = document.getElementById("menuBtn");
+      const menuIcon = menuBtn.querySelector("i");
+      const siteNav = document.getElementById("navbar");
+      const mobileMenu = document.getElementById("mobileMenu");
+      const backToTop = document.getElementById("backToTop");
+      const scrollProgress = document.getElementById("scrollProgress");
+      const cursorGlow = document.getElementById("cursorGlow");
+      const copyBaseUrl = document.getElementById("copyBaseUrl");
+
+      function renderCollections(filter = "") {
+        const query = filter.trim().toLowerCase();
+
+        const filtered = collections.filter((item) => {
+          return (
+            item.name.toLowerCase().includes(query) ||
+            item.id.toLowerCase().includes(query) ||
+            item.description.toLowerCase().includes(query)
+          );
+        });
+
+        collectionsGrid.innerHTML = filtered
+          .map(
+            (item, index) => `
+            <a href="${item.url || `./${item.id}.html`}" class="collection-card" data-tilt>
+                  <div class="collection-top">
+                  <div class="collection-icon">
+                    <i class="${item.icon}"></i>
+                  </div>
+
+                  <span class="collection-number">
+                    ${String(index + 1).padStart(2, "0")}
+                  </span>
+                </div>
+
+                <h3 class="collection-name">${item.name}</h3>
+
+                <p class="collection-description">
+                  ${item.description}
+                </p>
+
+                <div class="collection-footer">
+                  <span class="endpoint-count">
+                    ${item.endpoints}
+                  </span>
+
+                  <span class="view-link">
+                    Explore
+                    <i class="fa-solid fa-arrow-right"></i>
+                  </span>
+                </div>
+              </a>
+            `,
+          )
+          .join("");
+
+        collectionCount.textContent = `${filtered.length} ${
+          filtered.length === 1 ? "collection" : "collections"
+        }`;
+
+        emptyState.classList.toggle("show", filtered.length === 0);
+
+        initializeTilt();
+      }
+
+      function initializeTilt() {
+        if (!window.matchMedia("(hover: hover)").matches) {
+          return;
+        }
+
+        document.querySelectorAll("[data-tilt]").forEach((card) => {
+          card.addEventListener("mousemove", (event) => {
+            const rect = card.getBoundingClientRect();
+
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -2;
+
+            const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 2;
+
+            card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`;
+          });
+
+          card.addEventListener("mouseleave", () => {
+            card.style.transform = "";
+          });
+        });
+      }
+
+      function applyTheme(theme) {
+        const dark = theme === "dark";
+
+        document.documentElement.classList.toggle("dark", dark);
+
+        localStorage.setItem("tabeebi-theme", theme);
+      }
+
+      function toggleTheme() {
+        const dark = document.documentElement.classList.contains("dark");
+
+        applyTheme(dark ? "light" : "dark");
+      }
+
+      function loadTheme() {
+        const saved = localStorage.getItem("tabeebi-theme");
+
+        if (saved) {
+          applyTheme(saved);
+          return;
+        }
+
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+
+        applyTheme(prefersDark ? "dark" : "light");
+      }
+
+      function openMobileMenu() {
+        mobileMenu.classList.add("open");
+        menuBtn.setAttribute("aria-expanded", "true");
+        menuIcon.className = "fa-solid fa-xmark";
+      }
+
+      function closeMobileMenu() {
+        mobileMenu.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded", "false");
+        menuIcon.className = "fa-solid fa-bars";
+      }
+
+      searchInput.addEventListener("input", (event) => {
+        const value = event.target.value;
+
+        renderCollections(value);
+
+        clearSearch.classList.toggle("show", Boolean(value));
+      });
+
+      clearSearch.addEventListener("click", () => {
+        searchInput.value = "";
+        renderCollections();
+        clearSearch.classList.remove("show");
+        searchInput.focus();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "/" && document.activeElement !== searchInput) {
+          event.preventDefault();
+          searchInput.focus();
+        }
+
+        if (event.key === "Escape") {
+          closeMobileMenu();
+
+          if (document.activeElement === searchInput) {
+            searchInput.blur();
+          }
+        }
+      });
+
+      themeToggle.addEventListener("click", toggleTheme);
+      mobileThemeToggle.addEventListener("click", toggleTheme);
+
+      menuBtn.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("open")) {
+          closeMobileMenu();
+        } else {
+          openMobileMenu();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (
+          mobileMenu.classList.contains("open") &&
+          !mobileMenu.contains(event.target) &&
+          !menuBtn.contains(event.target)
+        ) {
+          closeMobileMenu();
+        }
+      });
+
+      document
+        .querySelectorAll(".site-mobile-link, .site-mobile-actions a")
+        .forEach((link) => {
+          link.addEventListener("click", closeMobileMenu);
+        });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 1280) {
+          closeMobileMenu();
+        }
+      });
+
+      copyBaseUrl.addEventListener("click", async () => {
+        const value = document.getElementById("baseUrl").textContent.trim();
+
+        try {
+          await navigator.clipboard.writeText(value);
+        } catch {
+          const textarea = document.createElement("textarea");
+
+          textarea.value = value;
+
+          document.body.appendChild(textarea);
+
+          textarea.select();
+          document.execCommand("copy");
+          textarea.remove();
+        }
+
+        copyBaseUrl.innerHTML = '<i class="fa-solid fa-check"></i>';
+
+        copyBaseUrl.style.color = "var(--success)";
+
+        setTimeout(() => {
+          copyBaseUrl.innerHTML = '<i class="fa-regular fa-copy"></i>';
+
+          copyBaseUrl.style.color = "";
+        }, 1500);
+      });
+
+      function updateScrollUI() {
+        const scrollTop = window.scrollY;
+
+        const maxScroll =
+          document.documentElement.scrollHeight - window.innerHeight;
+
+        const progress = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+
+        scrollProgress.style.width = `${progress}%`;
+
+        backToTop.classList.toggle("show", scrollTop > 400);
+
+        siteNav.classList.toggle("scrolled", scrollTop > 20);
+      }
+
+      window.addEventListener("scroll", updateScrollUI, {
+        passive: true,
+      });
+
+      backToTop.addEventListener("click", () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+
+      if (window.matchMedia("(hover: hover)").matches) {
+        document.addEventListener("mousemove", (event) => {
+          cursorGlow.style.left = `${event.clientX}px`;
+          cursorGlow.style.top = `${event.clientY}px`;
+        });
+      }
+
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          threshold: 0.08,
+        },
+      );
+
+      document.querySelectorAll(".reveal").forEach((element) => {
+        revealObserver.observe(element);
+      });
+
+      document.addEventListener("click", (event) => {
+        const btn = event.target.closest(".sn-btn");
+
+        if (!btn) {
+          return;
+        }
+
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const span = document.createElement("span");
+
+        span.className = "sn-ripple";
+        span.style.cssText = `width:${size}px;height:${size}px;left:${event.clientX - rect.left - size / 2}px;top:${event.clientY - rect.top - size / 2}px`;
+
+        btn.appendChild(span);
+
+        setTimeout(() => span.remove(), 650);
+      });
+
+      renderCollections();
+      loadTheme();
+      updateScrollUI();
+    </script>
+  </body>
+</html>

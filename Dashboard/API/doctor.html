@@ -1,0 +1,1588 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tabeebi API - Doctor Services Docs</title>
+
+    <link rel="icon" href="../../assets/browser%20image.png" />
+
+    <script>
+      (function () {
+        let savedTheme = "dark";
+        try {
+          savedTheme = localStorage.getItem("tabeebi-theme") || "dark";
+        } catch (e) {}
+        if (savedTheme !== "light" && savedTheme !== "dark")
+          savedTheme = "dark";
+        document.documentElement.classList.remove("dark", "light");
+        document.documentElement.classList.add(savedTheme);
+      })();
+    </script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              inter: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-padding-top: 100px;
+        scroll-behavior: smooth;
+        scrollbar-width: thin;
+        scrollbar-color: #0ea5e9 #080d16;
+        scrollbar-gutter: stable;
+      }
+
+      html::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      html::-webkit-scrollbar-track {
+        background: #080d16;
+      }
+
+      html::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+          180deg,
+          #38bdf8 0%,
+          #0ea5e9 45%,
+          #6366f1 100%
+        );
+        border: 2px solid #080d16;
+        border-radius: 999px;
+      }
+
+      html::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(
+          180deg,
+          #7dd3fc 0%,
+          #22d3ee 45%,
+          #818cf8 100%
+        );
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        color: #fff;
+        background:
+          radial-gradient(
+            circle at 15% 10%,
+            rgba(14, 165, 233, 0.1),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 85% 15%,
+            rgba(99, 102, 241, 0.1),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 50% 100%,
+            rgba(6, 182, 212, 0.06),
+            transparent 35%
+          ),
+          #070b13;
+        min-height: 100vh;
+        overflow-x: hidden;
+        transition:
+          background 0.35s ease,
+          color 0.35s ease;
+      }
+
+      ::selection {
+        background: rgba(14, 165, 233, 0.3);
+        color: #fff;
+      }
+
+      .grid-bg {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(148, 163, 184, 0.035) 1px,
+            transparent 1px
+          );
+        background-size: 44px 44px;
+        mask-image: linear-gradient(to bottom, black 0%, transparent 90%);
+      }
+
+      .ambient {
+        position: fixed;
+        width: 380px;
+        height: 380px;
+        border-radius: 50%;
+        pointer-events: none;
+        filter: blur(100px);
+        opacity: 0.08;
+        z-index: -1;
+      }
+
+      .ambient.one {
+        top: 10%;
+        left: -180px;
+        background: #0ea5e9;
+      }
+
+      .ambient.two {
+        top: 35%;
+        right: -180px;
+        background: #6366f1;
+      }
+
+      .ambient.three {
+        bottom: -200px;
+        left: 40%;
+        background: #06b6d4;
+      }
+
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(7, 11, 19, 0.55);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-bottom: 1px solid transparent;
+        transition:
+          background 0.3s ease,
+          border-color 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .navbar.scrolled {
+        background: rgba(7, 11, 19, 0.88);
+        border-bottom-color: rgba(148, 163, 184, 0.1);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .nav-logo {
+        position: relative;
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        overflow: hidden;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        box-shadow:
+          0 0 25px rgba(14, 165, 233, 0.15),
+          inset 0 0 20px rgba(14, 165, 233, 0.08);
+      }
+
+      .nav-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .nav-link {
+        position: relative;
+        color: #94a3b8;
+        transition: color 0.25s ease;
+      }
+
+      .nav-link:hover {
+        color: #38bdf8;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -8px;
+        height: 2px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #0ea5e9, #6366f1);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.25s ease;
+      }
+
+      .nav-link:hover::after {
+        transform: scaleX(1);
+      }
+
+      .btn {
+        transition:
+          transform 0.25s ease,
+          border-color 0.25s ease,
+          background 0.25s ease,
+          box-shadow 0.25s ease,
+          color 0.25s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-icon {
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        background: rgba(15, 23, 42, 0.45);
+        color: #cbd5e1;
+      }
+
+      .btn-icon:hover {
+        color: #38bdf8;
+        border-color: rgba(14, 165, 233, 0.35);
+        background: rgba(14, 165, 233, 0.08);
+        box-shadow: 0 8px 25px rgba(14, 165, 233, 0.1);
+      }
+
+      .postman-btn {
+        color: #fbbf24;
+        border-color: rgba(245, 158, 11, 0.2);
+        background: rgba(245, 158, 11, 0.06);
+      }
+
+      .postman-btn:hover {
+        color: #fcd34d;
+        border-color: rgba(245, 158, 11, 0.4);
+        background: rgba(245, 158, 11, 0.1);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.08);
+      }
+
+      .github-btn {
+        color: #e2e8f0;
+      }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(56, 189, 248, 0.13);
+        border-radius: 30px;
+        background:
+          radial-gradient(
+            circle at 0% 0%,
+            rgba(14, 165, 233, 0.1),
+            transparent 35%
+          ),
+          radial-gradient(
+            circle at 100% 100%,
+            rgba(99, 102, 241, 0.1),
+            transparent 35%
+          ),
+          rgba(10, 16, 27, 0.78);
+        box-shadow:
+          0 30px 100px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.025);
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 10%;
+        right: 10%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          #0ea5e9,
+          #6366f1,
+          transparent
+        );
+        opacity: 0.8;
+      }
+
+      .hero-image {
+        position: relative;
+        border-radius: 25px;
+        overflow: hidden;
+        border: 1px solid rgba(56, 189, 248, 0.16);
+        background:
+          radial-gradient(
+            circle at 30% 30%,
+            rgba(14, 165, 233, 0.12),
+            transparent 40%
+          ),
+          linear-gradient(
+            145deg,
+            rgba(14, 165, 233, 0.05),
+            rgba(99, 102, 241, 0.08)
+          ),
+          #090f1b;
+        box-shadow:
+          0 25px 70px rgba(0, 0, 0, 0.3),
+          0 0 50px rgba(14, 165, 233, 0.06);
+      }
+
+      .hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.92;
+      }
+
+      .image-label {
+        position: absolute;
+        bottom: 18px;
+        left: 18px;
+        right: 18px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(7, 11, 19, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.12);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+
+      .gradient-text {
+        background: linear-gradient(
+          90deg,
+          #38bdf8 0%,
+          #22d3ee 45%,
+          #818cf8 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .stat-card {
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        background: rgba(15, 23, 42, 0.42);
+        border-radius: 18px;
+        transition:
+          transform 0.3s ease,
+          border-color 0.3s ease,
+          background 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(14, 165, 233, 0.25);
+        background: rgba(14, 165, 233, 0.05);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.16);
+      }
+
+      .card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        border-radius: 22px;
+        background:
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(14, 165, 233, 0.035),
+            transparent 35%
+          ),
+          rgba(10, 16, 27, 0.7);
+        transition:
+          transform 0.3s ease,
+          border-color 0.3s ease,
+          box-shadow 0.3s ease,
+          background 0.3s ease;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 80px;
+        height: 1px;
+        background: linear-gradient(90deg, #0ea5e9, transparent);
+        opacity: 0.8;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(14, 165, 233, 0.28);
+        box-shadow:
+          0 25px 55px rgba(0, 0, 0, 0.22),
+          0 0 35px rgba(14, 165, 233, 0.04);
+      }
+
+      .endpoint-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        color: #7dd3fc;
+        border: 1px solid rgba(14, 165, 233, 0.15);
+        background: rgba(14, 165, 233, 0.07);
+        transition:
+          transform 0.3s ease,
+          color 0.3s ease,
+          background 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      .card:hover .endpoint-icon {
+        transform: rotate(-4deg) scale(1.05);
+        color: #38bdf8;
+        border-color: rgba(14, 165, 233, 0.3);
+        background: rgba(14, 165, 233, 0.11);
+      }
+
+      .method {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 64px;
+        padding: 5px 9px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+      }
+
+      .method-get {
+        color: #86efac;
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.16);
+      }
+
+      .method-post {
+        color: #67e8f9;
+        background: rgba(6, 182, 212, 0.1);
+        border: 1px solid rgba(6, 182, 212, 0.16);
+      }
+
+      .method-patch {
+        color: #a5b4fc;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.16);
+      }
+
+      .method-delete {
+        color: #fca5a5;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.16);
+      }
+
+      .endpoint-path {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        max-width: 100%;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.62);
+        border: 1px solid rgba(148, 163, 184, 0.08);
+        color: #cbd5e1;
+        font-family: monospace;
+        font-size: 12px;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .endpoint-path span {
+        color: #38bdf8;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        color: #86efac;
+        background: rgba(34, 197, 94, 0.07);
+        border: 1px solid rgba(34, 197, 94, 0.12);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #4ade80;
+        box-shadow: 0 0 10px rgba(74, 222, 128, 0.65);
+      }
+
+      .access-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .access-label i {
+        font-size: 9px;
+        color: #94a3b8;
+      }
+
+      .section-line {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          rgba(14, 165, 233, 0.35),
+          rgba(99, 102, 241, 0.2),
+          transparent
+        );
+      }
+
+      .section-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 13px;
+        border-radius: 999px;
+        color: #7dd3fc;
+        background: rgba(14, 165, 233, 0.07);
+        border: 1px solid rgba(14, 165, 233, 0.13);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .mobile-menu {
+        display: none;
+        border-top: 1px solid rgba(148, 163, 184, 0.08);
+        background: rgba(7, 11, 19, 0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+
+      .mobile-menu.open {
+        display: block;
+      }
+
+      .mobile-link {
+        color: #94a3b8;
+        transition:
+          color 0.2s ease,
+          background 0.2s ease;
+      }
+
+      .mobile-link:hover {
+        color: #38bdf8;
+        background: rgba(14, 165, 233, 0.06);
+      }
+
+      .footer-line {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(14, 165, 233, 0.22),
+          rgba(99, 102, 241, 0.22),
+          transparent
+        );
+      }
+
+      html.light {
+        color-scheme: light;
+        scrollbar-color: #0ea5e9 #e7f0f5;
+      }
+
+      html.light::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      html.light::-webkit-scrollbar-track {
+        background: #e7f0f5;
+      }
+
+      html.light::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+          180deg,
+          #0ea5e9 0%,
+          #06b6d4 45%,
+          #6366f1 100%
+        );
+        border: 2px solid #e7f0f5;
+        border-radius: 999px;
+      }
+
+      html.light::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(
+          180deg,
+          #0284c7 0%,
+          #0891b2 45%,
+          #4f46e5 100%
+        );
+      }
+
+      html.light body {
+        color: #0f172a;
+        background:
+          radial-gradient(
+            circle at 10% 0%,
+            rgba(14, 165, 233, 0.11),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 90% 10%,
+            rgba(99, 102, 241, 0.1),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 50% 100%,
+            rgba(6, 182, 212, 0.07),
+            transparent 35%
+          ),
+          #f7fbfe;
+      }
+
+      html.light .grid-bg {
+        background-image:
+          linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+        mask-image: linear-gradient(to bottom, black 0%, transparent 95%);
+      }
+
+      html.light .ambient {
+        opacity: 0.045;
+      }
+
+      html.light .navbar {
+        background: rgba(255, 255, 255, 0.62);
+        border-bottom-color: transparent;
+      }
+
+      html.light .navbar.scrolled {
+        background: rgba(255, 255, 255, 0.9);
+        border-bottom-color: rgba(15, 23, 42, 0.08);
+        box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+      }
+
+      html.light .nav-logo {
+        border-color: rgba(14, 165, 233, 0.25);
+        box-shadow:
+          0 0 25px rgba(14, 165, 233, 0.1),
+          inset 0 0 20px rgba(14, 165, 233, 0.05);
+      }
+
+      html.light .nav-link {
+        color: #475569;
+      }
+
+      html.light .nav-link:hover {
+        color: #0284c7;
+      }
+
+      html.light .btn-icon {
+        color: #334155;
+        background: rgba(255, 255, 255, 0.75);
+        border-color: rgba(15, 23, 42, 0.1);
+        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+      }
+
+      html.light .btn-icon:hover {
+        color: #0284c7;
+        border-color: rgba(14, 165, 233, 0.35);
+        background: rgba(239, 250, 255, 0.95);
+        box-shadow: 0 8px 25px rgba(14, 165, 233, 0.1);
+      }
+
+      html.light .postman-btn {
+        color: #b45309;
+        border-color: rgba(217, 119, 6, 0.2);
+        background: rgba(245, 158, 11, 0.07);
+      }
+
+      html.light .postman-btn:hover {
+        color: #92400e;
+        border-color: rgba(217, 119, 6, 0.35);
+        background: rgba(245, 158, 11, 0.12);
+      }
+
+      html.light .github-btn {
+        color: #334155;
+      }
+
+      html.light .hero {
+        border-color: rgba(14, 165, 233, 0.18);
+        background:
+          radial-gradient(
+            circle at 0% 0%,
+            rgba(14, 165, 233, 0.11),
+            transparent 35%
+          ),
+          radial-gradient(
+            circle at 100% 100%,
+            rgba(99, 102, 241, 0.09),
+            transparent 35%
+          ),
+          rgba(255, 255, 255, 0.8);
+        box-shadow:
+          0 30px 80px rgba(15, 23, 42, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      }
+
+      html.light .hero::before {
+        opacity: 0.7;
+      }
+
+      html.light .hero-image {
+        border-color: rgba(14, 165, 233, 0.18);
+        background:
+          radial-gradient(
+            circle at 30% 30%,
+            rgba(14, 165, 233, 0.13),
+            transparent 40%
+          ),
+          linear-gradient(
+            145deg,
+            rgba(14, 165, 233, 0.06),
+            rgba(99, 102, 241, 0.08)
+          ),
+          #eef7fb;
+        box-shadow:
+          0 25px 60px rgba(15, 23, 42, 0.1),
+          0 0 45px rgba(14, 165, 233, 0.05);
+      }
+
+      html.light .hero-image img {
+        opacity: 0.95;
+      }
+
+      html.light .image-label {
+        color: #0f172a;
+        background: rgba(255, 255, 255, 0.82);
+        border-color: rgba(15, 23, 42, 0.1);
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      }
+
+      html.light .stat-card {
+        border-color: rgba(15, 23, 42, 0.09);
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      }
+
+      html.light .stat-card:hover {
+        border-color: rgba(14, 165, 233, 0.28);
+        background: rgba(239, 250, 255, 0.9);
+        box-shadow: 0 15px 35px rgba(15, 23, 42, 0.07);
+      }
+
+      html.light .card {
+        border-color: rgba(15, 23, 42, 0.09);
+        background:
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(14, 165, 233, 0.05),
+            transparent 35%
+          ),
+          rgba(255, 255, 255, 0.8);
+        box-shadow: 0 12px 35px rgba(15, 23, 42, 0.045);
+      }
+
+      html.light .card:hover {
+        border-color: rgba(14, 165, 233, 0.32);
+        box-shadow:
+          0 25px 55px rgba(15, 23, 42, 0.09),
+          0 0 35px rgba(14, 165, 233, 0.05);
+      }
+
+      html.light .endpoint-icon {
+        color: #0284c7;
+        border-color: rgba(14, 165, 233, 0.18);
+        background: rgba(14, 165, 233, 0.07);
+      }
+
+      html.light .card:hover .endpoint-icon {
+        color: #0369a1;
+        border-color: rgba(14, 165, 233, 0.3);
+        background: rgba(14, 165, 233, 0.11);
+      }
+
+      html.light .endpoint-path {
+        background: rgba(241, 245, 249, 0.9);
+        border-color: rgba(15, 23, 42, 0.08);
+        color: #334155;
+      }
+
+      html.light .endpoint-path span {
+        color: #0284c7;
+      }
+
+      html.light .access-label {
+        color: #64748b;
+      }
+
+      html.light .access-label i {
+        color: #94a3b8;
+      }
+
+      html.light .section-pill {
+        color: #0284c7;
+        background: rgba(14, 165, 233, 0.07);
+        border-color: rgba(14, 165, 233, 0.16);
+      }
+
+      html.light .mobile-menu {
+        background: rgba(255, 255, 255, 0.96);
+        border-top-color: rgba(15, 23, 42, 0.08);
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+      }
+
+      html.light .mobile-link {
+        color: #475569;
+      }
+
+      html.light .mobile-link:hover {
+        color: #0284c7;
+        background: rgba(14, 165, 233, 0.06);
+      }
+
+      html.light .footer-line {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(14, 165, 233, 0.25),
+          rgba(99, 102, 241, 0.25),
+          transparent
+        );
+      }
+
+      html.light .text-white {
+        color: #0f172a !important;
+      }
+
+      html.light .text-slate-100 {
+        color: #1e293b !important;
+      }
+
+      html.light .text-slate-200 {
+        color: #334155 !important;
+      }
+
+      html.light .text-slate-300 {
+        color: #475569 !important;
+      }
+
+      html.light .text-slate-400 {
+        color: #475569 !important;
+      }
+
+      html.light .text-slate-500 {
+        color: #64748b !important;
+      }
+
+      html.light .text-slate-600 {
+        color: #64748b !important;
+      }
+
+      html.light .text-slate-700 {
+        color: #475569 !important;
+      }
+
+      html.light [class*="border-slate-800"] {
+        border-color: rgba(15, 23, 42, 0.09) !important;
+      }
+
+      html.light [class*="border-slate-700"] {
+        border-color: rgba(15, 23, 42, 0.1) !important;
+      }
+
+      html.light [class*="bg-slate-950"] {
+        background-color: rgba(248, 250, 252, 0.85) !important;
+      }
+
+      html.light [class*="bg-slate-900"] {
+        background-color: rgba(241, 245, 249, 0.8) !important;
+      }
+
+      html.light [class*="bg-slate-800"] {
+        background-color: rgba(226, 232, 240, 0.75) !important;
+      }
+
+      @media (max-width: 1024px) {
+        .hero {
+          border-radius: 24px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        html::-webkit-scrollbar {
+          width: 7px;
+        }
+
+        html.light::-webkit-scrollbar {
+          width: 7px;
+        }
+
+        .hero {
+          border-radius: 20px;
+        }
+
+        .card {
+          border-radius: 18px;
+        }
+
+        .nav-logo {
+          width: 38px;
+          height: 38px;
+        }
+
+        .hero-image {
+          border-radius: 20px;
+        }
+      }
+
+      .status-pill {
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+
+      .card h2 {
+        overflow-wrap: anywhere;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      html.light .method-get {
+        color: #15803d;
+        background: rgba(34, 197, 94, 0.12);
+        border-color: rgba(34, 197, 94, 0.28);
+      }
+
+      html.light .method-post {
+        color: #0e7490;
+        background: rgba(6, 182, 212, 0.12);
+        border-color: rgba(6, 182, 212, 0.28);
+      }
+
+      html.light .method-patch {
+        color: #4338ca;
+        background: rgba(99, 102, 241, 0.12);
+        border-color: rgba(99, 102, 241, 0.28);
+      }
+
+      html.light .method-delete {
+        color: #b91c1c;
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.28);
+      }
+
+      html.light .status-pill {
+        color: #15803d;
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.25);
+      }
+
+      html.light .status-dot {
+        background: #16a34a;
+        box-shadow: 0 0 10px rgba(22, 163, 74, 0.45);
+      }
+
+      html.light .text-cyan-400 {
+        color: #0891b2 !important;
+      }
+
+      html.light .text-indigo-400 {
+        color: #4f46e5 !important;
+      }
+
+      html.light .text-violet-400 {
+        color: #7c3aed !important;
+      }
+
+      html.light .gradient-text {
+        background: linear-gradient(
+          90deg,
+          #0284c7 0%,
+          #0891b2 45%,
+          #4f46e5 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent !important;
+      }
+
+      html.light .text-white.bg-gradient-to-r {
+        color: #fff !important;
+      }
+
+      html.light .image-label .text-slate-400 {
+        color: #475569 !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="grid-bg"></div>
+    <div class="ambient one"></div>
+    <div class="ambient two"></div>
+    <div class="ambient three"></div>
+
+    <header id="navbar" class="navbar">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between"
+      >
+        <a href="../index.html" class="flex items-center gap-3">
+          <div class="nav-logo">
+            <img src="../../assets/logo.jpg" alt="Tabeebi Logo" />
+          </div>
+
+          <div class="hidden sm:block">
+            <div class="font-extrabold tracking-tight text-white">
+              Tabeebi API
+            </div>
+            <div
+              class="text-[10px] text-slate-500 font-semibold tracking-wider"
+            >
+              DEVELOPER DOCUMENTATION
+            </div>
+          </div>
+        </a>
+
+        <div class="flex items-center gap-2">
+          <div class="hidden xl:flex items-center gap-2">
+            <a
+              href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+              target="_blank"
+              class="btn postman-btn h-10 px-4 rounded-xl text-sm font-bold flex items-center gap-2 border"
+            >
+              <i class="fa-solid fa-paper-plane"></i>
+              Postman
+            </a>
+
+            <a
+              href="https://github.com/MohamedFouad22/Tabeebi-Application"
+              target="_blank"
+              class="btn btn-icon github-btn h-10 px-4 rounded-xl text-sm font-bold flex items-center gap-2"
+            >
+              <i class="fa-brands fa-github"></i>
+              GitHub
+            </a>
+
+            <a
+              href="../index.html"
+              class="btn btn-icon h-10 px-4 rounded-xl text-sm font-bold flex items-center gap-2"
+            >
+              <i class="fa-solid fa-arrow-left"></i>
+              Back
+            </a>
+          </div>
+
+          <button
+            id="themeBtn"
+            type="button"
+            class="btn btn-icon w-10 h-10 rounded-xl flex items-center justify-center"
+            title="Toggle Theme"
+            aria-label="Toggle Theme"
+          >
+            <i id="themeIcon" class="fa-solid fa-sun"></i>
+          </button>
+
+          <button
+            id="menuBtn"
+            type="button"
+            class="xl:hidden btn btn-icon w-10 h-10 rounded-xl flex items-center justify-center"
+            title="Open Menu"
+            aria-label="Open Menu"
+          >
+            <i id="menuIcon" class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobileMenu" class="mobile-menu xl:hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <a
+              href="../index.html"
+              class="mobile-link rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2"
+            >
+              <i class="fa-solid fa-house"></i>
+              Home
+            </a>
+
+            <a
+              href="../index.html"
+              class="mobile-link rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2"
+            >
+              <i class="fa-solid fa-code"></i>
+              API
+            </a>
+
+            <a
+              href="#doctor-module"
+              class="mobile-link rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2"
+            >
+              <i class="fa-solid fa-user-doctor"></i>
+              Doctor Module
+            </a>
+
+            <a
+              href="#endpoints"
+              class="mobile-link rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2"
+            >
+              <i class="fa-solid fa-route"></i>
+              Endpoints
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3">
+            <a
+              href="../index.html"
+              class="btn btn-icon h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+            >
+              <i class="fa-solid fa-arrow-left"></i>
+              Back
+            </a>
+
+            <a
+              href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+              target="_blank"
+              class="btn postman-btn h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-2 border"
+            >
+              <i class="fa-solid fa-paper-plane"></i>
+              Postman
+            </a>
+
+            <a
+              href="https://github.com/MohamedFouad22/Tabeebi-Application"
+              target="_blank"
+              class="btn btn-icon h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+            >
+              <i class="fa-brands fa-github"></i>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main
+      id="doctor-module"
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16"
+    >
+      <section class="hero p-5 sm:p-8 lg:p-10">
+        <div
+          class="grid lg:grid-cols-[1.05fr_0.95fr] gap-8 lg:gap-12 items-center"
+        >
+          <div>
+            <div class="section-pill mb-5">
+              <i class="fa-solid fa-user-doctor"></i>
+              Doctor Management
+            </div>
+
+            <h1
+              class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.05] text-white"
+            >
+              Doctor Services in
+              <span class="gradient-text">Tabeebi API</span>
+            </h1>
+
+            <p
+              class="mt-5 text-base sm:text-lg leading-8 text-slate-400 max-w-2xl"
+            >
+              Complete doctor management routes including doctor profile
+              creation with image upload, listing and retrieving doctors, plus
+              updating and deleting doctor profiles.
+            </p>
+
+            <div class="flex flex-wrap gap-3 mt-7">
+              <a
+                href="#endpoints"
+                class="btn h-11 px-5 rounded-xl font-bold text-sm flex items-center gap-2 text-white bg-gradient-to-r from-sky-500 to-indigo-500 shadow-lg shadow-sky-500/10"
+              >
+                <i class="fa-solid fa-bolt"></i>
+                Explore Endpoints
+              </a>
+
+              <a
+                href="https://documenter.getpostman.com/view/43128963/2sBYB4M7cT"
+                target="_blank"
+                class="btn btn-icon h-11 px-5 rounded-xl font-bold text-sm flex items-center gap-2"
+              >
+                <i class="fa-solid fa-paper-plane"></i>
+                Test with Postman
+              </a>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
+              <div class="stat-card p-4">
+                <div class="text-2xl font-extrabold gradient-text">5</div>
+                <div class="text-xs text-slate-500 mt-1 font-semibold">
+                  Endpoints
+                </div>
+              </div>
+
+              <div class="stat-card p-4">
+                <div class="text-2xl font-extrabold text-cyan-400">3</div>
+                <div class="text-xs text-slate-500 mt-1 font-semibold">
+                  Protected
+                </div>
+              </div>
+
+              <div class="stat-card p-4">
+                <div class="text-2xl font-extrabold text-indigo-400">2</div>
+                <div class="text-xs text-slate-500 mt-1 font-semibold">
+                  Public
+                </div>
+              </div>
+
+              <div class="stat-card p-4">
+                <div class="text-2xl font-extrabold text-violet-400">2</div>
+                <div class="text-xs text-slate-500 mt-1 font-semibold">
+                  Upload Routes
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-image aspect-[4/3]">
+            <img src="../../assets/doctor.jpg" alt="Tabeebi Doctor Module" />
+
+            <div class="image-label">
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <div class="text-xs font-extrabold">
+                    Doctor Management Layer
+                  </div>
+                  <div class="text-[10px] text-slate-400 mt-1">
+                    Doctors • Profiles • Images
+                  </div>
+                </div>
+
+                <div class="status-pill">
+                  <span class="status-dot"></span>
+                  Active
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="endpoints" class="mt-20">
+        <div class="flex items-center gap-4 mb-8">
+          <div class="section-pill">
+            <i class="fa-solid fa-code"></i>
+            API Endpoints
+          </div>
+
+          <div class="section-line flex-1"></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <article class="card p-5 sm:p-6">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="endpoint-icon">
+                  <i class="fa-solid fa-user-plus"></i>
+                </div>
+
+                <div>
+                  <h2 class="text-lg font-extrabold text-white">
+                    Create Doctor
+                  </h2>
+
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="method method-post">POST</span>
+
+                    <span class="access-label">
+                      <i class="fa-solid fa-lock"></i>
+                      Protected Route
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-pill">
+                <span class="status-dot"></span>
+                Active
+              </div>
+            </div>
+
+            <div class="endpoint-path mt-5">
+              <span>/api/v1</span>/doctor/create-doctor/:userId?
+            </div>
+
+            <p class="text-sm text-slate-400 leading-7 mt-4">
+              Create a new doctor profile with an image uploaded as multipart
+              form data using the doctorImage field, with an optional userId
+              parameter. Allowed roles: Admin, Doctor.
+            </p>
+          </article>
+
+          <article class="card p-5 sm:p-6">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="endpoint-icon">
+                  <i class="fa-solid fa-list"></i>
+                </div>
+
+                <div>
+                  <h2 class="text-lg font-extrabold text-white">Get Doctors</h2>
+
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="method method-get">GET</span>
+
+                    <span class="access-label">
+                      <i class="fa-solid fa-lock-open"></i>
+                      Public Route
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-pill">
+                <span class="status-dot"></span>
+                Active
+              </div>
+            </div>
+
+            <div class="endpoint-path mt-5">
+              <span>/api/v1</span>/doctor/get-doctors
+            </div>
+
+            <p class="text-sm text-slate-400 leading-7 mt-4">
+              Retrieve the list of all doctors using optional query parameters
+              for filtering and pagination.
+            </p>
+          </article>
+
+          <article class="card p-5 sm:p-6">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="endpoint-icon">
+                  <i class="fa-solid fa-user-doctor"></i>
+                </div>
+
+                <div>
+                  <h2 class="text-lg font-extrabold text-white">
+                    Get Specific Doctor
+                  </h2>
+
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="method method-get">GET</span>
+
+                    <span class="access-label">
+                      <i class="fa-solid fa-lock-open"></i>
+                      Public Route
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-pill">
+                <span class="status-dot"></span>
+                Active
+              </div>
+            </div>
+
+            <div class="endpoint-path mt-5">
+              <span>/api/v1</span>/doctor/get-doctor/:doctorId
+            </div>
+
+            <p class="text-sm text-slate-400 leading-7 mt-4">
+              Retrieve detailed information for a single doctor using its
+              doctorId parameter.
+            </p>
+          </article>
+
+          <article class="card p-5 sm:p-6">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="endpoint-icon">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </div>
+
+                <div>
+                  <h2 class="text-lg font-extrabold text-white">
+                    Update Doctor
+                  </h2>
+
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="method method-patch">PATCH</span>
+
+                    <span class="access-label">
+                      <i class="fa-solid fa-lock"></i>
+                      Protected Route
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-pill">
+                <span class="status-dot"></span>
+                Active
+              </div>
+            </div>
+
+            <div class="endpoint-path mt-5">
+              <span>/api/v1</span>/doctor/update-doctor/:doctorId
+            </div>
+
+            <p class="text-sm text-slate-400 leading-7 mt-4">
+              Update doctor details and replace the profile image using the
+              doctorImage file field. Allowed roles: Admin, Doctor.
+            </p>
+          </article>
+
+          <article class="card p-5 sm:p-6">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="endpoint-icon">
+                  <i class="fa-solid fa-user-minus"></i>
+                </div>
+
+                <div>
+                  <h2 class="text-lg font-extrabold text-white">
+                    Delete Doctor
+                  </h2>
+
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="method method-delete">DELETE</span>
+
+                    <span class="access-label">
+                      <i class="fa-solid fa-lock"></i>
+                      Protected Route
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-pill">
+                <span class="status-dot"></span>
+                Active
+              </div>
+            </div>
+
+            <div class="endpoint-path mt-5">
+              <span>/api/v1</span>/doctor/delete-doctor/:doctorId
+            </div>
+
+            <p class="text-sm text-slate-400 leading-7 mt-4">
+              Permanently delete a doctor profile using its doctorId parameter.
+              Allowed roles: Admin, Doctor.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <footer class="mt-20">
+        <div class="footer-line"></div>
+
+        <div
+          class="py-7 flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <div class="text-sm text-slate-500 text-center sm:text-left">
+            © 2026 Tabeebi. Built for developers.
+          </div>
+
+          <div class="flex items-center gap-4 text-xs text-slate-500">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-cyan-500"></i>
+              Secure API
+            </span>
+
+            <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-code text-indigo-400"></i>
+              RESTful
+            </span>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      const navbar = document.getElementById("navbar");
+      const menuBtn = document.getElementById("menuBtn");
+      const menuIcon = document.getElementById("menuIcon");
+      const mobileMenu = document.getElementById("mobileMenu");
+      const themeBtn = document.getElementById("themeBtn");
+      const themeIcon = document.getElementById("themeIcon");
+
+      function updateThemeIcon() {
+        const isLight = document.documentElement.classList.contains("light");
+
+        themeIcon.className = isLight ? "fa-solid fa-moon" : "fa-solid fa-sun";
+
+        themeBtn.setAttribute(
+          "title",
+          isLight ? "Switch to Dark Mode" : "Switch to Light Mode",
+        );
+
+        themeBtn.setAttribute(
+          "aria-label",
+          isLight ? "Switch to Dark Mode" : "Switch to Light Mode",
+        );
+      }
+
+      function setTheme(theme) {
+        document.documentElement.classList.remove("dark", "light");
+        document.documentElement.classList.add(theme);
+        try {
+          localStorage.setItem("tabeebi-theme", theme);
+        } catch (e) {}
+        updateThemeIcon();
+      }
+
+      themeBtn.addEventListener("click", () => {
+        const isLight = document.documentElement.classList.contains("light");
+        setTheme(isLight ? "dark" : "light");
+      });
+
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("open");
+
+        const isOpen = mobileMenu.classList.contains("open");
+
+        menuIcon.className = isOpen ? "fa-solid fa-xmark" : "fa-solid fa-bars";
+
+        menuBtn.setAttribute("aria-label", isOpen ? "Close Menu" : "Open Menu");
+
+        menuBtn.setAttribute("title", isOpen ? "Close Menu" : "Open Menu");
+      });
+
+      document.querySelectorAll(".mobile-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.remove("open");
+          menuIcon.className = "fa-solid fa-bars";
+          menuBtn.setAttribute("aria-label", "Open Menu");
+          menuBtn.setAttribute("title", "Open Menu");
+        });
+      });
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 15) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+      });
+
+      updateThemeIcon();
+    </script>
+  </body>
+</html>
